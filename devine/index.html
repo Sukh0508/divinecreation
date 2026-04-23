@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Vasudha - Premium Indian Gifting & Décor. Handcrafted with love, delivered with grace."/>
+  <title>Divine Creation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div class="loader" id="loader">
+  <div class="loader-inner">
+    <div class="loader-logo">Divine Creations</div>
+    <div class="loader-bar"><span></span></div>
+  </div>
+</div>
+
+<!-- STICKY NAVBAR -->
+<nav class="navbar" id="navbar">
+  <!-- <div class="nav-top"> -->
+    <!-- <div class="nav-marquee"> -->
+      <!-- <span>✦ Free Shipping on orders above ₹999 &nbsp;&nbsp;&nbsp; ✦ Cash on Delivery Available &nbsp;&nbsp;&nbsp; ✦ Handcrafted with Love &nbsp;&nbsp;&nbsp; ✦ Easy Returns &nbsp;&nbsp;&nbsp; ✦ 100% Authentic Products &nbsp;&nbsp;&nbsp;</span> -->
+      <!-- <span>✦ Free Shipping on orders above ₹999 &nbsp;&nbsp;&nbsp; ✦ Cash on Delivery Available &nbsp;&nbsp;&nbsp; ✦ Handcrafted with Love &nbsp;&nbsp;&nbsp; ✦ Easy Returns &nbsp;&nbsp;&nbsp; ✦ 100% Authentic Products &nbsp;&nbsp;&nbsp;</span> -->
+    <!-- </div> -->
+  <!-- </div> -->
+  <div class="nav-main">
+    <div class="nav-left">
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links desktop-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#shop">Shop</a></li>
+        <li class="has-dropdown">
+          <a href="#categories">Categories <svg width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></a>
+          <div class="dropdown">
+            
+    <a href="#shop" onclick="filterByCategory('Idol')">Idols</a>
+  <a href="#shop" onclick="filterByCategory('Frame')">Photo Frames</a>
+  <a href="#shop" onclick="filterByCategory('Krishna hand')">Krishna Hands</a>
+            <!-- <a href="#festive">Festive Specials</a> -->
+            <!-- <a href="#corporate">Corporate Gifts</a> -->
+          </div>
+        </li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="nav-logo">
+      <a href="#home">
+        <span class="logo-script">Divine Creations</span>
+        <span class="logo-sub">Premium Gifting & Décor</span>
+      </a>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-icon" id="searchToggle" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="nav-icon wishlist-btn" id="wishlistToggle" aria-label="Wishlist">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span class="badge" id="wishlistBadge">0</span>
+      </button>
+      <button class="nav-icon cart-btn" id="cartToggle" aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="close-mobile" id="closeMenu">✕</button>
+  <ul>
+    <li><a href="#home" class="mobile-link">Home</a></li>
+    <li><a href="#shop" class="mobile-link">Shop All</a></li>
+          <li class="has-dropdown">
+          <a href="#categories">Categories <svg width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></a>
+          <div class="dropdown">
+            
+  <a href="#shop" class="mobile-link"  onclick="filterByCategory('Idol')">Idols</a>
+  <a href="#shop" class="mobile-link" onclick="filterByCategory('Frame')">Photo Frames</a>
+  <a href="#shop" class="mobile-link" onclick="filterByCategory('Krishna hand')">Krishna Hands</a>
+            <!-- <a href="#festive">Festive Specials</a> -->
+            <!-- <a href="#corporate">Corporate Gifts</a> -->
+          </div>
+        </li>
+    <li><a href="#about" class="mobile-link">About Us</a></li>
+    <li><a href="#contact" class="mobile-link">Contact</a></li>
+  </ul>
+</div>
+<div class="overlay mobile-overlay" id="mobileOverlay"></div>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay">
+  <button class="close-search" id="closeSearch">✕</button>
+  <div class="search-inner">
+    <p class="search-label">What are you looking for?</p>
+    <input type="text" id="searchInput" placeholder="Search products…" autocomplete="off"/>
+    <div class="search-suggestions">
+      <span data-cat="krishna hand">Krishna hands </span>
+      <span data-cat="idol">Idol</span>
+      <span data-cat="frame">Photo Frames</span>
+      <!-- <span>Corporate Gifts</span> -->
+    </div>
+  </div>
+</div>
+
+<!-- CART DRAWER -->
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h3>Your Cart <span id="cartCount">(0)</span></h3>
+    <button class="close-cart" id="closeCart">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+      <p>Your cart is empty</p>
+      <a href="#shop" class="btn-gold btn-sm">Start Shopping</a>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total">
+      <span>Subtotal</span>
+      <span id="cartTotal">₹0</span>
+    </div>
+    <p class="cart-note">Shipping & taxes calculated at checkout</p>
+    <button class="btn-gold btn-full" onclick="showCheckout()">Proceed to Checkout</button>
+    <a href="#shop" class="btn-outline btn-full">Continue Shopping</a>
+  </div>
+</div>
+<div class="overlay cart-overlay" id="cartOverlay"></div>
+
+<!-- WISHLIST DRAWER -->
+<div class="wishlist-drawer" id="wishlistDrawer">
+  <div class="cart-header">
+    <h3>Wishlist</h3>
+    <button class="close-cart" id="closeWishlist">✕</button>
+  </div>
+  <div class="cart-items" id="wishlistItems">
+    <div class="cart-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <p>No items in wishlist</p>
+    </div>
+  </div>
+</div>
+<div class="overlay wishlist-overlay" id="wishlistOverlay"></div>
+
+<!-- QUICK VIEW MODAL -->
+<div class="modal-overlay" id="quickViewOverlay">
+  <div class="quick-view-modal" id="quickViewModal">
+    <button class="close-modal" id="closeQuickView">✕</button>
+    <div class="qv-grid">
+      <div class="qv-img">
+        <img id="qvImg" src="" alt=""/>
+        <span id="qvBadge" class="product-badge"></span>
+      </div>
+      <div class="qv-info">
+        <p class="qv-category" id="qvCategory"></p>
+        <h2 id="qvName"></h2>
+        <div class="qv-stars">★★★★★ <span id="qvReviews"></span></div>
+        <div class="qv-pricing">
+          <span class="price-now" id="qvPrice"></span>
+          <span class="price-old" id="qvOld"></span>
+          <span class="price-disc" id="qvDisc"></span>
+        </div>
+        <p class="qv-desc" id="qvDesc"></p>
+        <div class="qv-qty">
+          <button onclick="changeQty(-1)">−</button>
+          <span id="qvQty">1</span>
+          <button onclick="changeQty(1)">+</button>
+        </div>
+        <div class="qv-actions">
+          <button class="btn-gold" id="qvAddCart">Add to Cart</button>
+          <button class="btn-outline qv-wish" id="qvWish">♡ Wishlist</button>
+        </div>
+        <div class="trust-mini">
+          <span>🚚 Free Delivery</span>
+          <span>📦 Easy Returns</span>
+          <span>✅ Authentic</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkoutOverlay" style="display:none">
+  <div class="checkout-modal">
+    <button class="close-modal" onclick="document.getElementById('checkoutOverlay').style.display='none'">✕</button>
+    <h2>Checkout</h2>
+    <div class="checkout-grid">
+      <div class="checkout-form">
+        <h4>Shipping Details</h4>
+        <input type="text" placeholder="Full Name*" class="form-input"/>
+        <input type="email" placeholder="Email Address*" class="form-input"/>
+        <input type="tel" placeholder="Phone Number*" class="form-input"/>
+        <input type="text" placeholder="Address Line 1*" class="form-input"/>
+        <input type="text" placeholder="Address Line 2" class="form-input"/>
+        <div class="form-row">
+          <input type="text" placeholder="City*" class="form-input"/>
+          <input type="text" placeholder="Pincode*" class="form-input"/>
+        </div>
+        <select class="form-input">
+          <option>Select State*</option>
+          <option>Maharashtra</option><option>Delhi</option><option>Karnataka</option>
+          <option>Tamil Nadu</option><option>Gujarat</option><option>Rajasthan</option>
+          <option>Punjab</option><option>West Bengal</option>
+        </select>
+        <h4>Payment Method</h4>
+        <div class="payment-opts">
+          <label class="pay-opt"><input type="radio" name="pay" checked/> Cash on Delivery</label>
+          <label class="pay-opt"><input type="radio" name="pay"/> UPI / Net Banking</label>
+          <label class="pay-opt"><input type="radio" name="pay"/> Credit / Debit Card</label>
+        </div>
+        <button class="btn-gold btn-full" onclick="placeOrder()">Place Order →</button>
+      </div>
+      <div class="order-summary">
+        <h4>Order Summary</h4>
+        <div id="checkoutItems"></div>
+        <div class="summary-row"><span>Subtotal</span><span id="checkoutSubtotal"></span></div>
+        <div class="summary-row"><span>Shipping</span><span class="green">FREE</span></div>
+        <div class="summary-row total-row"><span>Total</span><span id="checkoutTotal"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER SUCCESS -->
+<div class="modal-overlay" id="orderSuccess" style="display:none">
+  <div class="success-modal">
+    <div class="success-icon">✓</div>
+    <h2>Order Placed!</h2>
+    <p>Thank you for shopping with Vasudha. You'll receive a confirmation shortly.</p>
+    <button class="btn-gold" onclick="closeOrder()">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- ============ MAIN CONTENT ============ -->
+<main>
+
+<!-- HERO SECTION -->
+<section class="hero" id="home">
+  <div class="hero-slides">
+    <div class="hero-slide active" style="background-image:url('./img/ChatGPT\ Image\ Apr\ 21\,\ 2026\,\ 02_18_17\ PM.png')">
+      <div class="slide-overlay"></div>
+      <div class="hero-content reveal">
+        <!-- <p class="hero-eyebrow">New Collection</p> -->
+        <h1>Divine Black Finish Murugan Idol<em></em></h1>
+        <p class="hero-sub">Bring home the divine presence and spiritual elegance with this beautifully crafted Murugan idol. Designed with intricate detailing and a rich matte black finish, this piece reflects traditional craftsmanship blended with modern aesthetics, making it perfect for both décor and devotion.</p>
+        <div class="hero-ctas">
+          <a href="#shop" class="btn-gold">Explore Collection</a>
+          <a href="#categories" class="btn-ghost">Shop by Category</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-slide" style="background-image:url('./img/ChatGPT\ Image\ Apr\ 21\,\ 2026\,\ 02_21_24\ PM.png')">
+      <div class="slide-overlay"></div>
+      <div class="hero-content reveal">
+        <!-- <p class="hero-eyebrow">Festive Season</p> -->
+        <h1>Divine Red Ganesha Idol<em></em></h1>
+        <p class="hero-sub">Invite prosperity, wisdom, and positive energy into your space with this beautifully crafted Lord Ganesha idol. Designed in a vibrant red finish with elegant golden detailing, this piece perfectly blends traditional spirituality with a modern premium look.</p>
+        <div class="hero-ctas">
+          <a href="#gifting" class="btn-gold">Shop Hampers</a>
+          <a href="#about" class="btn-ghost">Our Story</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-slide" style="background-image:url('./img/ChatGPT\ Image\ Apr\ 21\,\ 2026\,\ 02_25_14\ PM.png')">
+      <div class="slide-overlay"></div>
+      <div class="hero-content reveal">
+        <!-- <p class="hero-eyebrow">Corporate Gifting</p> -->
+        <h1>Luxury Gold Finish Balaji Idol<br/><em></em></h1>
+        <p class="hero-sub">Enhance your space with the divine grace and royal elegance of this beautifully crafted Lord Balaji (Venkateswara) idol. Designed with a rich gold finish and intricate detailing, this masterpiece reflects timeless devotion and luxurious craftsmanship, making it perfect for both पूजा and décor.</p>
+        <div class="hero-ctas">
+          <a href="#corporate" class="btn-gold">Enquire Now</a>
+          <a href="#contact" class="btn-ghost">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-controls">
+    <button class="slide-prev" aria-label="Previous">‹</button>
+    <div class="slide-dots">
+      <span class="dot active" data-slide="0"></span>
+      <span class="dot" data-slide="1"></span>
+      <span class="dot" data-slide="2"></span>
+    </div>
+    <button class="slide-next" aria-label="Next">›</button>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- TRUST BADGES -->
+<!-- <section class="trust-bar">
+  <div class="container">
+    <div class="trust-grid">
+      <div class="trust-item fade-in">
+        <div class="trust-icon">🚚</div>
+        <div><strong>Free Shipping</strong><span>On orders above ₹999</span></div>
+      </div>
+      <div class="trust-item fade-in">
+        <div class="trust-icon">📦</div>
+        <div><strong>Cash on Delivery</strong><span>Available nationwide</span></div>
+      </div>
+      <div class="trust-item fade-in">
+        <div class="trust-icon">🔄</div>
+        <div><strong>Easy Returns</strong><span>7-day hassle-free returns</span></div>
+      </div>
+      <div class="trust-item fade-in">
+        <div class="trust-icon">🏆</div>
+        <div><strong>Authentic Products</strong><span>100% genuine & handcrafted</span></div>
+      </div>
+      <div class="trust-item fade-in">
+        <div class="trust-icon">🔒</div>
+        <div><strong>Secure Payments</strong><span>SSL encrypted checkout</span></div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<!-- CATEGORIES -->
+<section class="categories section" id="categories">
+  <div class="container">
+    <div class="section-head fade-in">
+      <p class="eyebrow">Explore</p>
+      <h2>Shop by Category</h2>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card fade-in" onclick="filterByCategory('gifting')">
+        <div class="cat-img" style="background-image:url('https://divinecreationsgift.com/media/shop-72/category-None/Idol.jpg')"></div>
+        <div class="cat-info"><h3>Idol</h3></div>
+      </div>
+      <div class="cat-card fade-in" onclick="filterByCategory('decor')">
+        <div class="cat-img" style="background-image:url('https://divinecreationsgift.com/media/shop-72/category-576/1000035628.png')"></div>
+        <div class="cat-info"><h3>Krishna Hands</h3></div>
+      </div>
+      <div class="cat-card fade-in" onclick="filterByCategory('pooja')">
+        <div class="cat-img" style="background-image:url('https://divinecreationsgift.com/media/shop-72/category-None/Photo_Frame.jpg')"></div>
+        <div class="cat-info"><h3>Photo Frames</h3></div>
+      </div>
+      <div class="cat-card fade-in" onclick="filterByCategory('festive')">
+        <div class="cat-img" style="background-image:url('https://divinecreationsgift.com/media/shop-72/product-shiv-ling/shiv-ling-4164d9.jpg')"></div>
+        <div class="cat-info"><h3>Shiv Ling</h3></div>
+      </div>
+      <div class="cat-card fade-in" onclick="filterByCategory('corporate')">
+        <div class="cat-img" style="background-image:url('https://divinecreationsgift.com/media/shop-72/product-chhatrapati-shivaji-maharaj-idol-10-inches/chhatrapati-shivaji-maharaj-i_Q2B1mTM.jpg')"></div>
+        <div class="cat-info"><h3>Chhatrapati Shivaji Maharaj Idol – 10 Inches</h3></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFER BANNER -->
+<section class="offer-banner">
+  <div class="offer-inner">
+    <p class="offer-tag">Limited Time</p>
+    <h2>Festive Sale — Up to <em>40% Off</em></h2>
+    <!-- <p>On selected gifting hampers & home décor. Use code <strong>VASUDHA20</strong> for extra 20% off.</p> -->
+    <a href="#shop" class="btn-gold">Shop the Sale</a>
+  </div>
+</section>
+
+<!-- PRODUCTS SHOP -->
+<section class="shop section" id="shop">
+  <div class="container">
+    <div class="section-head fade-in">
+      <p class="eyebrow">Handpicked for You</p>
+      <h2>Our Collection</h2>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters fade-in" id="filters">
+      <button class="filter-btn active" data-cat="all">All Products</button>
+      <button class="filter-btn" data-cat="Krishna hand" id="k">Krishna Hands</button>
+      <button class="filter-btn" data-cat="Frame">Photo Frames</button>
+      <button class="filter-btn" data-cat="Idol">Idol</button>
+      <!-- <button class="filter-btn" data-cat="festive">Festive</button> -->
+      <!-- <button class="filter-btn" data-cat="corporate">Corporate</button> -->
+    </div>
+
+    <!-- PRODUCTS GRID -->
+    <div class="products-grid" id="productsGrid"></div>
+
+    <div class="load-more fade-in">
+      <button class="btn-outline" id="loadMoreBtn" onclick="loadMore()">Load More Products</button>
+    </div>
+  </div>
+</section>
+
+<!-- BESTSELLERS MARQUEE -->
+<div class="marquee-band">
+  <div class="marquee-track">
+    <span>✦ Idol</span><span>Krishna Hand</span><span>✦</span><span>Photo Frame</span><span>✦</span><span>✦ Idol</span><span>Krishna Hand</span><span>✦</span><span>Photo Frame</span><span>✦</span>
+    <span>✦ Idol</span><span>Krishna Hand</span><span>✦</span><span>Photo Frame</span><span>✦</span><span>✦ Idol</span><span>Krishna Hand</span><span>✦</span><span>Photo Frame</span><span>✦</span>
+  </div>
+</div>
+
+<!-- ABOUT STRIP -->
+<section class="about-strip section" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img fade-in">
+        <img src="https://divinecreationsgift.com/media/shop-72/product-tirupati-balaji/tirupati-balaji-43fce4.jpg" alt="Artisans at work"/>
+        <!-- <div class="about-img-badge">Since 2015</div> -->
+      </div>
+      <div class="about-text fade-in">
+        <p class="eyebrow">Our Story</p>
+        <h2>One Stop Solution for Idols & Gifiting</h2>
+        <p>Thoughtful Gifts, Treasured Memories</p>
+        <p>At Divine Creations, we specialize in bringing joy through meaningful and personalized gifts. Our range includes beautifully crafted idols that radiate positivity, along with unique gifting options to suit every occasion. We understand that a gift isn’t just an item—it’s an expression of love and thoughtfulness. That’s why we ensure each product is of premium quality and designed to leave a lasting impression. Whether you’re celebrating a birthday, anniversary, festival, or corporate event, we have something special for everyone. Our idols and custom gifts are carefully chosen to make your loved ones feel valued and remembered, creating memories that last a lifetime. With us, gifting becomes more than a gesture; it becomes a moment to cherish.</p>
+        <!-- <p>Every piece that leaves our workshop carries the soul of its maker and the warmth of Indian hospitality.</p> -->
+        <!-- <div class="about-stats">
+          <div><strong>10,000+</strong><span>Happy Customers</span></div>
+          <div><strong>500+</strong><span>Unique Products</span></div>
+          <div><strong>50+</strong><span>Artisan Partners</span></div>
+        </div> -->
+        <a href="#contact" class="btn-gold">Get in Touch</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEW ARRIVALS -->
+<section class="new-arrivals section" id="new-arrivals">
+  <div class="container">
+    <!-- <div class="section-head fade-in"> -->
+      <!-- <p class="eyebrow">Just In</p> -->
+      <!-- <h2>New Arrivals</h2> -->
+    </div>
+    <div class="products-grid" id="newArrivalsGrid"></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials section">
+  <div class="container">
+    <div class="section-head fade-in">
+      <p class="eyebrow">What Customers Say</p>
+      <h2>Loved by Thousands</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card fade-in">
+        <div class="testi-stars">★★★★★</div>
+        <p>Great! Really satisfied with the quality and service.</p>
+        <div class="testi-author"><strong>Parul Mittal</strong><span></div>
+      </div>
+      <div class="testi-card fade-in">
+        <div class="testi-stars">★★★★★</div>
+        <p>Amazing selection and excellent customer service. Highly recommend!</p>
+        <div class="testi-author"><strong>Pooja Jain</strong></div>
+      </div>
+      <div class="testi-card fade-in">
+        <div class="testi-stars">★★★★★</div>
+        <p>The best place. I will definitely be coming back!</p>
+        <div class="testi-author"><strong>Meera Desai</strong></div>
+      </div>
+      <!-- <div class="testi-card fade-in">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Beautiful products, fast shipping, and excellent customer support. The terracotta diya set made our Diwali celebration so much more special!"</p>
+        <div class="testi-author"><strong>Kavita Patel</strong><span>Ahmedabad</span></div>
+      </div> -->
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM STRIP -->
+<!-- <section class="insta-strip section">
+  <div class="container">
+    <div class="section-head fade-in">
+      <p class="eyebrow">@vasudha.store</p>
+      <h2>Follow Our Journey</h2>
+    </div>
+    <div class="insta-grid">
+      <div class="insta-img fade-in" style="background-image:url('https://images.unsplash.com/photo-1602832973018-8948ee8c2e80?w=400&q=80')"><div class="insta-hover"><span>♡ 2.1K</span></div></div>
+      <div class="insta-img fade-in" style="background-image:url('https://images.unsplash.com/photo-1610500796385-3ffc1ae2f046?w=400&q=80')"><div class="insta-hover"><span>♡ 3.4K</span></div></div>
+      <div class="insta-img fade-in" style="background-image:url('https://images.unsplash.com/photo-1616588589676-62b3bd4ff6d2?w=400&q=80')"><div class="insta-hover"><span>♡ 1.8K</span></div></div>
+      <div class="insta-img fade-in" style="background-image:url('https://images.unsplash.com/photo-1545759668-f85a1e9c51e5?w=400&q=80')"><div class="insta-hover"><span>♡ 4.2K</span></div></div>
+      <div class="insta-img fade-in" style="background-image:url('https://images.unsplash.com/photo-1611068661404-cc22a8c8e51b?w=400&q=80')"><div class="insta-hover"><span>♡ 2.7K</span></div></div>
+    </div>
+  </div>
+</section> -->
+
+<!-- CONTACT -->
+<section class="contact section" id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info fade-in">
+        <p class="eyebrow">Reach Us</p>
+        <h2>We'd Love to Hear From You</h2>
+        <p>Whether you have a question, a custom order request, or just want to say hello — our team is here for you.</p>
+        <div class="contact-details">
+          <div><span>📍</span><div><strong>Address</strong><p>  Gala No 5, Ramji Patel Compound, Near Malika Hotel, Pathanwadi, Malad East -  400097</p></div></div>
+          <div><span>📞</span><div><strong>Phone / WhatsApp</strong><p><a href="tel: +917400147625">+ 91 74001 47625</a></p></div></div>
+          <div><span>✉️</span><div><strong>Email</strong><p><a href="mailto: amiiit0605@gmail.com">amiiit0605@gmail.com</a></p></div></div>
+        </div>
+      </div>
+      <div class="contact-form fade-in">
+        <form id="contactForm" onsubmit="submitContact(event)">
+          <input type="text" placeholder="Your Name*" class="form-input" required/>
+          <input type="email" placeholder="Email Address*" class="form-input" required/>
+          <input type="tel" placeholder="Phone Number" class="form-input"/>
+          <select class="form-input">
+            <option>Subject</option>
+            <option>Order Enquiry</option>
+            <option>Corporate Gifting</option>
+            <option>Custom Order</option>
+            <option>Return / Exchange</option>
+            <option>Other</option>
+          </select>
+          <textarea placeholder="Your Message*" class="form-input" rows="4" required></textarea>
+          <button type="submit" class="btn-gold btn-full">Send Message</button>
+        </form>
+        <div class="form-success" id="formSuccess" style="display:none">
+          <p>✓ Thank you! We'll get back to you within 24 hours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+  <div class="container">
+    <div class="newsletter-inner fade-in">
+      <p class="eyebrow">Stay in the Loop</p>
+      <h2>Join the Divine Creations Circle</h2>
+      <p>Get exclusive offers, new arrivals, and artisan stories delivered to your inbox.</p>
+      <div class="newsletter-form">
+        <input type="email" placeholder="Your email address" id="nlEmail"/>
+        <button class="btn-gold" onclick="subscribeNL()">Subscribe</button>
+      </div>
+      <p class="nl-note">No spam, ever. Unsubscribe anytime.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">Divine Creations</div>
+          <p>Premium Indian gifting & décor, crafted with love and rooted in tradition.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="#" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="#" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+            </a>
+            <a href="https://wa.me/919876543210" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#shop">Shop All</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#" onclick="showPage('privacy')">Privacy Policy</a></li>
+            <li><a href="#" onclick="showPage('terms')">Terms & Conditions</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Categories</h4>
+          <ul>
+            <li><a href="#gifting" onclick="filterByCategory('gifting')">Gifting Hampers</a></li>
+            <li><a href="#decor" onclick="filterByCategory('decor')">Home Décor</a></li>
+            <li><a href="#pooja" onclick="filterByCategory('pooja')">Pooja Items</a></li>
+            <li><a href="#festive" onclick="filterByCategory('festive')">Festive Specials</a></li>
+            <li><a href="#corporate" onclick="filterByCategory('corporate')">Corporate Gifts</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Customer Care</h4>
+          <ul>
+            <li><a href="#">Track Order</a></li>
+            <li><a href="#">Returns & Exchange</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="https://wa.me/919876543210">WhatsApp Support</a></li>
+          </ul>
+          <div class="payment-icons">
+            <span>We Accept:</span>
+            <div class="pay-logos">
+              <span class="pay-tag">UPI</span>
+              <span class="pay-tag">COD</span>
+              <span class="pay-tag">Visa</span>
+              <span class="pay-tag">MC</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <p>© 2026 Divine Creations. All rights reserved. Made with ♥ in India.</p>
+      <p>Designed for artisans, crafted for you.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/917400147625?text=Hi%20Divine Creations!%20I'm%20interested%20in%20your%20products." class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp Chat">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+  <span class="wa-tooltip">Chat with us!</span>
+</a>
+
+<!-- BACK TO TOP -->
+<button class="back-top" id="backTop" aria-label="Back to top">↑</button>
+
+<!-- PRIVACY / TERMS MODAL -->
+<div class="modal-overlay" id="pageModal" style="display:none">
+  <div class="page-modal">
+    <button class="close-modal" onclick="document.getElementById('pageModal').style.display='none'">✕</button>
+    <div id="pageModalContent"></div>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
