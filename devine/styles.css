@@ -351,20 +351,66 @@ input, select, textarea { font-family: var(--font-sans); }
 .btn-sm { padding: 8px 20px; font-size: 0.75rem; }
 
 /* ==================== HERO ==================== */
-.hero { position: relative; height: 100vh; min-height: 600px; overflow: hidden; }
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 560px;
+  overflow: hidden;
+}
 .hero-slides { position: absolute; inset: 0; }
 .hero-slide {
   position: absolute; inset: 0;
-  background-size: cover; background-position: center;
-  opacity: 0; transition: opacity 1s ease;
+  opacity: 0;
+  transition: opacity 1s ease;
 }
+
+/* Blurred background fills empty gaps — same image, blurred & scaled */
+.hero-slide::before {
+  content: '';
+  position: absolute;
+  inset: -40px;
+  background-image: var(--bg);
+  background-size: cover;
+  background-position: center;
+  filter: blur(28px) brightness(0.6);
+  z-index: 0;
+}
+
+/* Main image — full visibility, no cropping */
+.hero-bg-img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  object-position: center;
+  z-index: 1;
+  display: block;
+}
+
+/* Mobile: cover fills better on portrait screens */
+@media (max-width: 768px) {
+  .hero {
+    height: 100svh;
+    min-height: 500px;
+  }
+  .hero-bg-img {
+    object-fit: cover;
+    object-position: center top;
+  }
+  .hero-slide::before {
+    display: none;
+  }
+}
+
 .hero-slide.active { opacity: 1; }
-.slide-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(26,23,20,0.55) 0%, rgba(26,23,20,0.2) 100%); }
+.slide-overlay { position: absolute; inset: 0; z-index: 2; background: linear-gradient(135deg, rgba(26,23,20,0.5) 0%, rgba(26,23,20,0.15) 100%); }
 
 .hero-content {
   position: absolute; left: 10%; bottom: 20%; max-width: 560px;
   color: var(--white); transform: translateY(30px); opacity: 0;
   transition: all 1s ease 0.4s;
+  z-index: 3;
 }
 .hero-slide.active .hero-content { transform: translateY(0); opacity: 1; }
 .hero-eyebrow {
@@ -852,6 +898,7 @@ select.form-input { cursor: pointer; }
   .nav-icon { width: 36px; height: 36px; }
   .nav-icon svg { width: 18px; height: 18px; }
   /* Desktop CSS rule relies on 769px+ media query, meaning hover handles itself. */
+  .hero { min-height: 500px; }
   .hero-content { left: 5%; bottom: 15%; max-width: 90%; }
   .hero-controls { bottom: 20px; right: 16px; }
   .scroll-hint { display: none; }
