@@ -407,26 +407,29 @@ input, select, textarea { font-family: var(--font-sans); }
 .slide-overlay { position: absolute; inset: 0; z-index: 2; background: linear-gradient(135deg, rgba(26,23,20,0.5) 0%, rgba(26,23,20,0.15) 100%); }
 
 .hero-content {
-  position: absolute; left: 10%; bottom: 20%; max-width: 560px;
+  position: absolute; left: 10%; bottom: 30%; max-width: 560px;
   color: var(--white); transform: translateY(30px); opacity: 0;
   transition: all 1s ease 0.4s;
   z-index: 3;
+  
+  
 }
 .hero-slide.active .hero-content { transform: translateY(0); opacity: 1; }
-.hero-eyebrow {
+/* .hero-eyebrow {
   font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
   color: var(--gold-light); margin-bottom: 12px; font-weight: 400;
-}
+} */
 .hero h1 {
   font-family: var(--font-serif); font-size: clamp(2.8rem, 6vw, 5rem);
   font-weight: 300; line-height: 1.1; margin-bottom: 16px;
 }
 .hero h1 em { font-style: italic; color: var(--gold-light); }
-.hero-sub { font-size: 1rem; font-weight: 300; opacity: 0.85; margin-bottom: 32px; max-width: 400px; }
+/* .hero-sub { font-size: 1rem; font-weight: 300; opacity: 0.85; margin-bottom: 32px; max-width: 400px; } */
 .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
 
 .hero-controls {
   position: absolute; bottom: 32px; right: 48px;
+
   display: flex; align-items: center; gap: 16px; z-index: 10;
 }
 .slide-prev, .slide-next {
@@ -899,7 +902,7 @@ select.form-input { cursor: pointer; }
   .nav-icon svg { width: 18px; height: 18px; }
   /* Desktop CSS rule relies on 769px+ media query, meaning hover handles itself. */
   .hero { min-height: 500px; }
-  .hero-content { left: 5%; bottom: 15%; max-width: 90%; }
+  .hero-content { left: 5%; bottom: 30%; max-width: 90%; }
   .hero-controls { bottom: 20px; right: 16px; }
   .scroll-hint { display: none; }
   .trust-item { min-width: 140px; padding: 12px 16px; }
