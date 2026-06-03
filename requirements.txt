@@ -1,0 +1,17 @@
+asgiref==3.11.1
+certifi==2026.5.20
+charset-normalizer==3.4.7
+diff-match-patch==20241021
+Django==6.0.5
+django-import-export==4.4.1
+django-jet-reboot==1.3.10
+django-unfold==0.94.0
+gunicorn==26.0.0
+idna==3.17
+packaging==26.2
+pillow==12.2.0
+razorpay==2.0.1
+requests==2.34.2
+sqlparse==0.5.5
+tablib==3.9.0
+urllib3==2.7.0
