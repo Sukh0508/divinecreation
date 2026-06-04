@@ -770,13 +770,14 @@ function getCookie(name) {
                 break;
             }
         }
+      }
+      return cookieValue;
     }
-    return cookieValue;
-}
-
-const csrftoken = getCookie("csrftoken");
-
-
+    
+    const csrftoken = getCookie("csrftoken");
+    
+    
+let rzpInstance = null;
 function placeOrder() {
   let name = document.getElementById("name").value.trim()
   let email= document.getElementById("email").value.trim()
@@ -830,16 +831,18 @@ function placeOrder() {
         .replace("₹", "")
         .trim();
 
-    console.log("Total:", total);
-    console.log("CSRF:", csrftoken);
+// ✅ Safe CSRF token initialization inside the function
+  const currentCsrf = getCookie("csrftoken");
+
+  console.log("Total:", total);
+  console.log("CSRF:", currentCsrf);
     
     // ✅ Scope initialized correctly
-    let rzpInstance = null;
     
     fetch("/checkout/", {
         method: "POST",
         headers: {
-            "X-CSRFToken": csrftoken,
+           "X-CSRFToken": currentCsrf,
             "Content-Type": "application/x-www-form-urlencoded"
         },
         body: 
@@ -878,7 +881,7 @@ function placeOrder() {
                 fetch("/payment-success/",{
                   method:"POST",
                   headers:{
-                       "X-CSRFToken": csrftoken,
+                      "X-CSRFToken": currentCsrf,
                        "Content-Type": "application/x-www-form-urlencoded"
                   },
                   body:
