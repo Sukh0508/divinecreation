@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.urls import path ,include
 from main.views import Home
 from main.views import Checkout
+from main.views import Payment_success
 # from main.views import Bulk_import
 
 urlpatterns = [
@@ -12,10 +13,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Home , name="home"),
     path("checkout/", Checkout, name="checkout"),
-    # path('contact/', Contact_view, name='contact'),
-#  path("bulk-import/", Bulk_import, name="bulk_import")
+     path("payment-success/", Payment_success, name="payment_success"),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL ,document_root= settings.MEDIA_ROOT)
 
+    # path('contact/', Contact_view, name='contact'),
+#  path("bulk-import/", Bulk_import, name="bulk_import")

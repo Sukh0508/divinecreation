@@ -38,7 +38,7 @@ class Client_review(models.Model):
     review = models.CharField(max_length=200)
     
     def __str__(self):
-        return self.name
+        return self.name 
     
 
 class Order(models.Model):

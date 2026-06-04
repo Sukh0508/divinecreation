@@ -452,7 +452,13 @@ function showCheckout() {
 }
 
 function closeOrder() {
-  document.getElementById('orderSuccess').style.display = 'none';
+    document.getElementById("orderSuccess").style.display = "none";
+
+    // Optional: homepage par scroll
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 
 // ---- SEARCH ----

@@ -38,6 +38,8 @@ def Home(request) :
     })
 
 def Checkout(request):
+    print("CHECKOUT HIT")
+    print(request.POST)
     if request.method == "POST":
          print(request.POST)
        
@@ -56,14 +58,17 @@ def Checkout(request):
                  "payment_capture": 1
               })
            
+         print("RAZORPAY ORDER:", order)
   
          return JsonResponse({
              "order_id": order["id"],
-             "amount": amount
+             "amount": amount * 100
              # "key": settings.RAZORPAY_KEY_ID
          })
 
 def Payment_success(request):
+     print("PAYMENT SUCCESS HIT")
+     print(request.POST)
      if request.method == "POST":
           payment_id = request.POST.get("payment_id")
           order_id = request.POST.get("order_id")
@@ -81,7 +86,7 @@ def Payment_success(request):
           amount = int(amount)
 
           
-          Order.objects.create(
+          new_order= Order.objects.create(
                  name=name,
                  email=email,
                  phone=phone,
@@ -94,6 +99,7 @@ def Payment_success(request):
                  order_id=order_id
        
          ) 
+          print("ORDER SAVED:", new_order)
           
           return JsonResponse({"status" : "success"})
 

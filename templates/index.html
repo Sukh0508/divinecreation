@@ -155,7 +155,7 @@
       </div>
       <p class="cart-note">Shipping & taxes calculated at checkout</p>
       <button class="btn-gold btn-full" onclick="showCheckout()">Proceed to Checkout</button>
-      <a href="#shop" class="btn-outline btn-full">Continue Shopping</a>
+      <a href="" class="btn-outline btn-full">Continue Shopping</a>
     </div>
   </div>
   <div class="overlay cart-overlay" id="cartOverlay"></div>
@@ -268,7 +268,7 @@
     <div class="success-modal">
       <div class="success-icon">✓</div>
       <h2>Order Placed!</h2>
-      <p>Thank you for shopping with Vasudha. You'll receive a confirmation shortly.</p>
+      <p>Thank you for shopping with Divine Creations. You'll receive a confirmation shortly.</p>
       <button class="btn-gold" onclick="closeOrder()">Continue Shopping</button>
     </div>
   </div>
@@ -789,7 +789,7 @@ function placeOrder() {
   let pincode = document.getElementById("pincode").value.trim()
 
 
-  if(!name || !email || !phone || !address1 || !address2 || !city || !pincode ){
+  if(!name || !email || !phone || !address1 || !city || !pincode ){
     let payment= document.querySelector(".payment-opts")
     let msg =document.createElement("p")
     msg.textContent = "*Please fill all required fields"
@@ -867,43 +867,72 @@ function placeOrder() {
             order_id: data.order_id,
 
             handler: function(response) {
+              alert("HANDLER HIT");
+              console.log(response);
+              console.log("PAYMENT SUCCESS CALLBACK");
+              console.log(response);
+              console.log("Calling payment-success API");
                 fetch("/payment-success/",{
                   method:"POST",
                   headers:{
                        "X-CSRFToken": csrftoken,
                        "Content-Type": "application/x-www-form-urlencoded"
                   },
+                   
                   body:
-                   "payment_id=" + response.razorpay_payment_id +
-                   "&order_id=" + response.razorpay_order_id +
-                   "&name=" + name +
-                   "&email=" + email +
-                   "&phone=" + phone +
-                   "&address1=" + address1 +
-                   "&address2=" + address2 +
-                   "&city=" + city +
-                   "&pincode=" + pincode +
-                   "&amount=" + total
+                   "payment_id=" + encodeURIComponent(response.razorpay_payment_id) +
+                   "&order_id=" + encodeURIComponent(response.razorpay_order_id) +
+                   "&name=" + encodeURIComponent(name) +
+                   "&email=" + encodeURIComponent(email) +
+                   "&phone=" + encodeURIComponent(phone) +
+                   "&address1=" + encodeURIComponent(address1) +
+                   "&address2=" + encodeURIComponent(address2) +
+                   "&city=" + encodeURIComponent(city) +
+                   "&pincode=" + encodeURIComponent(pincode) +
+                   "&amount=" + encodeURIComponent(total)
                 })
                 .then(res=>res.json())
                 .then(data=>{
-                    alert("Order Saved Successfully");
+                   if(data.status === "success"){
+
+                   localStorage.removeItem("cart");
+
+                    document.getElementById("orderSuccess").style.display = "flex";
+                   }
                     console.log(data);
                 })
                 .catch(err => {
         console.log("Error:", err);
     });
+    
 
-            }
+            },
+            modal: {
+        ondismiss: function() {
+        console.log("RAZORPAY CLOSED");
+    }
+}
+            
         };
+        
+        
+        
+        
 
         var rzp = new Razorpay(options);
+        rzp.on('payment.failed',function (response) {
+           console.log("PAYMENT FAILED");
+    console.log(response.error)
+          
+        })
         rzp.open();
+
 
     })
     .catch(err => {
         console.log("Error:", err);
     });
+    
 
 }
 
