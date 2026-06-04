@@ -148,7 +148,9 @@ SECRET_KEY = 'django-insecure-4fivxt5a^rtv38w#xo3q#$w!0!38+!909p!zw-%h6o@a4ovx+2
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://divinecreation.onrender.com',
+]
 
 # Application definition
 
