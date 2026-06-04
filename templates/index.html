@@ -865,8 +865,15 @@ function placeOrder() {
             order_id: data.order_id,
 
             handler: function(response) {
-              alert("HANDLER HIT");
-              console.log("Calling payment-success API");
+              alert("HANDLER HIT: Paise kat chuke hain!");
+    
+    // ✅ 1. PEHLE POPUP KO HIDE KARO (Django ka wait mat karo)
+    if (rzpInstance && rzpInstance.close) {
+        rzpInstance.close();
+    }
+    document.body.style.overflow = 'auto'; // Screen scroll open karo
+
+    console.log("Calling payment-success API to save data...");
               
                 fetch("/payment-success/",{
                   method:"POST",
@@ -888,24 +895,13 @@ function placeOrder() {
                 })
                 .then(res=>res.json())
                 .then(data=>{
-                   if(data.status === "success"){
-                     localStorage.removeItem("cart");
-                     
-                     // ✅ Auto-close uses correct upper scope variable now
-                     if (rzpInstance && rzpInstance.close) {
-                         rzpInstance.close();
-                     }
-                     // 🔥 2. SCREEN SCROLL KO WAPAS CHALANE KE LIYE
-       document.body.style.overflow = 'auto';
-
-                     // 3. Agar koi extra razorpay ka backdrop fasa ho toh use delete karne ke liye
-       let backdrop = document.querySelector('.razorpay-backdrop');
-       if(backdrop) { backdrop.remove(); }
-
-                     document.getElementById("orderSuccess").style.display = "flex";
-                   } else{
-                     alert("Order table par save nahi hua: " + data.message);
-                   }
+                  if(data.status === "success"){
+           localStorage.removeItem("cart");
+           document.getElementById("orderSuccess").style.display = "flex";
+       } else {
+           // 🚨 Agar database me koi galti hui, toh screen par alert aayega
+           alert("Paise kat gaye par database me save nahi hua: " + data.message);
+       }
                    console.log(data);
                 })
                 .catch(err => {
