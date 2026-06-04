@@ -2,6 +2,7 @@ import razorpay
 from django.http import JsonResponse
 # from django.contrib import messages
 from django.shortcuts import render ,redirect
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from main.models import Order 
 from .models import Home_background_img ,Category , Product_list ,About_img , Client_review,Contact
@@ -37,6 +38,7 @@ def Home(request) :
         
     })
 
+@csrf_exempt
 def Checkout(request):
     print("CHECKOUT HIT")
     print(request.POST)
@@ -66,6 +68,7 @@ def Checkout(request):
              # "key": settings.RAZORPAY_KEY_ID
          })
 
+@csrf_exempt
 def Payment_success(request):
      print("PAYMENT SUCCESS HIT")
      print(request.POST)
