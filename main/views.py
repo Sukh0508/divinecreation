@@ -70,41 +70,51 @@ def Checkout(request):
 
 @csrf_exempt
 def Payment_success(request):
-     print("PAYMENT SUCCESS HIT")
-     print(request.POST)
-     if request.method == "POST":
-          payment_id = request.POST.get("payment_id")
-          order_id = request.POST.get("order_id")
+    print("PAYMENT SUCCESS HIT")
+    print(request.POST)
+    
+    if request.method == "POST":
+        try:
+            payment_id = request.POST.get("payment_id")
+            order_id = request.POST.get("order_id")
 
-          name = request.POST.get("name")
-          email = request.POST.get("email")
-          phone = request.POST.get("phone")
-          address1 = request.POST.get("address1")
-          address2 = request.POST.get("address2")
-          city = request.POST.get("city")
-          pincode = request.POST.get("pincode")
+            name = request.POST.get("name")
+            email = request.POST.get("email")
+            phone = request.POST.get("phone")
+            address1 = request.POST.get("address1")
+            address2 = request.POST.get("address2")
+            city = request.POST.get("city")
+            pincode = request.POST.get("pincode")
 
-          amount = request.POST.get("amount", "0")
-          amount = amount.replace(",", "")
-          amount = int(amount)
+            # Safe conversion: Pehle float me convert karo fir int banao (taaki decimal crash na ho)
+            amount_raw = request.POST.get("amount", "0")
+            amount_clean = amount_raw.replace(",", "").strip()
+            amount = int(float(amount_clean)) if amount_clean else 0
 
-          
-          new_order= Order.objects.create(
-                 name=name,
-                 email=email,
-                 phone=phone,
-                 address1=address1,
-                 address2=address2,
-                 city=city,
-                 pincode=pincode,
-                 amount=amount,
-                 payment_id=payment_id,
-                 order_id=order_id
-       
-         ) 
-          print("ORDER SAVED:", new_order)
-          
-          return JsonResponse({"status" : "success"})
+            # Database me order create karna
+            new_order = Order.objects.create(
+                name=name,
+                email=email,
+                phone=phone,
+                address1=address1,
+                address2=address2,
+                city=city,
+                pincode=pincode,
+                amount=amount,
+                payment_id=payment_id,
+                order_id=order_id
+            ) 
+            print("ORDER SAVED SUCCESSFULLY:", new_order)
+            
+            # Yeh line frontend ko screen unfreeze karne ka order degi
+            return JsonResponse({"status": "success"})
+            
+        except Exception as e:
+            print("🔴 BACKEND ERROR DURING SAVING:", str(e))
+            # Agar backend me kuch bhi fata, toh browser ko alert message bhej do freeze karne ki jagah
+            return JsonResponse({"status": "failed", "message": str(e)}, status=500)
+
+    return JsonResponse({"status": "invalid_method"}, status=400)
 
 
 

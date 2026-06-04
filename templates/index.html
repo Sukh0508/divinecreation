@@ -895,6 +895,12 @@ function placeOrder() {
                      if (rzpInstance && rzpInstance.close) {
                          rzpInstance.close();
                      }
+                     // 🔥 2. SCREEN SCROLL KO WAPAS CHALANE KE LIYE
+       document.body.style.overflow = 'auto';
+
+                     // 3. Agar koi extra razorpay ka backdrop fasa ho toh use delete karne ke liye
+       let backdrop = document.querySelector('.razorpay-backdrop');
+       if(backdrop) { backdrop.remove(); }
 
                      document.getElementById("orderSuccess").style.display = "flex";
                    } else{
