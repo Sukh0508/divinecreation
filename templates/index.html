@@ -754,8 +754,6 @@
         ];
 
 
-
-
 function getCookie(name) {
     let cookieValue = null;
 
@@ -795,40 +793,37 @@ function placeOrder() {
     msg.textContent = "*Please fill all required fields"
     msg.style.color = "red"
     payment.append(msg)
-    setInterval(() => {
+    setTimeout(() => {
       msg.remove()
     }, 3000);
-      
-     
      return
   }
+  
   if(phone.length !== 10){
-    let phone = document.getElementById("phone")
+    let phoneField = document.getElementById("phone")
     let msg = document.createElement("p")
     msg.textContent ="Enter valid 10 digit mobile number"
     msg.style.color = "red";
     msg.style.margin = "5px 0";
-    phone.insertAdjacentElement("afterend", msg);
-    setInterval(() => {
+    phoneField.insertAdjacentElement("afterend", msg);
+    setTimeout(() => {
       msg.remove()
-      
     }, 3000);
     return
   }
+  
   if (!email.includes("@")) {
-    let email = document.getElementById("email")
+    let emailField = document.getElementById("email")
     let msg = document.createElement("p")
     msg.textContent ="Enter valid email"
     msg.style.color = "red";
     msg.style.margin = "5px 0";
-    email.insertAdjacentElement("afterend", msg);
-    setInterval(() => {
+    emailField.insertAdjacentElement("afterend", msg);
+    setTimeout(() => {
       msg.remove()
-      
     }, 3000);
-   
     return;
-}
+  }
 
     let total = document.getElementById("checkoutTotal")
         .innerText
@@ -837,7 +832,10 @@ function placeOrder() {
 
     console.log("Total:", total);
     console.log("CSRF:", csrftoken);
-
+    
+    // ✅ Scope initialized correctly
+    let rzpInstance = null;
+    
     fetch("/checkout/", {
         method: "POST",
         headers: {
@@ -868,17 +866,14 @@ function placeOrder() {
 
             handler: function(response) {
               alert("HANDLER HIT");
-              console.log(response);
-              console.log("PAYMENT SUCCESS CALLBACK");
-              console.log(response);
               console.log("Calling payment-success API");
+              
                 fetch("/payment-success/",{
                   method:"POST",
                   headers:{
                        "X-CSRFToken": csrftoken,
                        "Content-Type": "application/x-www-form-urlencoded"
                   },
-                   
                   body:
                    "payment_id=" + encodeURIComponent(response.razorpay_payment_id) +
                    "&order_id=" + encodeURIComponent(response.razorpay_order_id) +
@@ -894,49 +889,43 @@ function placeOrder() {
                 .then(res=>res.json())
                 .then(data=>{
                    if(data.status === "success"){
+                     localStorage.removeItem("cart");
+                     
+                     // ✅ Auto-close uses correct upper scope variable now
+                     if (rzpInstance && rzpInstance.close) {
+                         rzpInstance.close();
+                     }
 
-                   localStorage.removeItem("cart");
-
-                    document.getElementById("orderSuccess").style.display = "flex";
+                     document.getElementById("orderSuccess").style.display = "flex";
+                   } else{
+                     alert("Order table par save nahi hua: " + data.message);
                    }
-                    console.log(data);
+                   console.log(data);
                 })
                 .catch(err => {
-        console.log("Error:", err);
-    });
-    
-
+                    console.log("Error inside success handler fetch:", err);
+                });
             },
             modal: {
-        ondismiss: function() {
-        console.log("RAZORPAY CLOSED");
-    }
-}
-            
+                ondismiss: function() {
+                    console.log("RAZORPAY CLOSED");
+                }
+            }
         };
-        
-        
-        
-        
 
-        var rzp = new Razorpay(options);
-        rzp.on('payment.failed',function (response) {
-           console.log("PAYMENT FAILED");
-    console.log(response.error)
-          
-        })
-        rzp.open();
-
+        // ✅ Correct variable mapping
+        rzpInstance = new Razorpay(options);
+        rzpInstance.on('payment.failed', function (response) {
+            console.log("PAYMENT FAILED");
+            console.log(response.error);
+        });
+        rzpInstance.open();
 
     })
     .catch(err => {
-        console.log("Error:", err);
+        console.log("Outer Fetch Error:", err);
     });
-    
-
 }
-
-
   </script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="{% static 'js/script.js' %}"></script>
