@@ -3,17 +3,16 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path ,include
-from main.views import Home
-from main.views import Checkout
-from main.views import Payment_success
-# from main.views import Bulk_import
+from main.views import Home, Checkout, Payment_success, Order_success, Razorpay_webhook
 
 urlpatterns = [
     path('jet/', include('jet.urls', 'jet')),
     path('admin/', admin.site.urls),
     path('', Home , name="home"),
     path("checkout/", Checkout, name="checkout"),
-     path("payment-success/", Payment_success, name="payment_success"),
+    path("payment-success/", Payment_success, name="payment_success"),
+    path("order-success/", Order_success, name="order_success"),
+    path("razorpay-webhook/", Razorpay_webhook, name="razorpay_webhook"),
 ]
 
 if settings.DEBUG:

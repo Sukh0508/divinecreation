@@ -451,16 +451,33 @@ function showCheckout() {
   document.getElementById('checkoutOverlay').style.display = 'flex';
 }
 
-function closeOrder() {
-    document.getElementById("orderSuccess").style.display = "none";
+// // // 👇 Function ke brackets me 'e' likhna zaroori hai
+// function closeOrder(e) {
+//     // 1. 🔥 REFRESH/RELOAD KO ROKO (Sabse pehle yeh line aayegi)
+//     if (e && e.preventDefault) {
+//         e.preventDefault(); 
+//     }
 
-    // Optional: homepage par scroll
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
+//     console.log("Stopping reload... starting full cleanup.");
 
+//     // 2. Cart ko poori tarah saaf karo
+//     localStorage.removeItem("cart");
+//     localStorage.clear(); 
+    
+//     // 3. Form ke saare dabbe (inputs) khaali karo
+//     document.querySelectorAll('form input').forEach(input => input.value = "");
+    
+//     // 4. Success popup ko band karo
+//     let popup = document.getElementById("orderSuccess");
+//     if (popup) { 
+//         popup.style.display = "none"; 
+//     }
+
+//     console.log("Cleanup done! Now safely redirecting...");
+
+//     // 5. 🔥 SAB KAAM HONE KE BAAD AB HOMEPAGE PAR BEHJO (Naye products ke liye)
+//     window.location.href = "/"; 
+// }
 // ---- SEARCH ----
 function initSearch() {
   document.getElementById('searchToggle').addEventListener('click', () => {

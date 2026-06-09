@@ -1,0 +1,272 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful - Divine Creations</title>
+  <!-- SEO -->
+  <meta name="description" content="Thank you for your order with Divine Creations. Your payment was processed successfully.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #d4af37;
+      --gold-dark: #b89028;
+      --gold-light: #f3e5ab;
+      --bg: #0f0f0f;
+      --card-bg: #1a1a1a;
+      --text: #f0f0f0;
+      --text-muted: #aaaaaa;
+      --success: #2ec4b6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .success-container {
+      background: linear-gradient(145deg, #222222, #151515);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 20px;
+      padding: 40px 30px;
+      max-width: 550px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 15px rgba(212, 175, 55, 0.1);
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .success-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .icon-wrapper {
+      width: 80px;
+      height: 80px;
+      background: rgba(46, 196, 182, 0.1);
+      border: 2px solid var(--success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      position: relative;
+      box-shadow: 0 0 20px rgba(46, 196, 182, 0.2);
+      animation: pulseSuccess 2s infinite;
+    }
+
+    .icon-wrapper svg {
+      width: 40px;
+      height: 40px;
+      color: var(--success);
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+      animation: drawCheck 1.2s ease-in-out 0.4s forwards;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: linear-gradient(to right, #ffffff, var(--gold-light), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(212, 175, 55, 0.3), transparent);
+      margin: 20px 0;
+    }
+
+    .order-details {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 30px;
+    }
+
+    .details-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    .detail-row:last-child {
+      margin-bottom: 0;
+      font-weight: 600;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+
+    .detail-label {
+      color: var(--text-muted);
+    }
+
+    .detail-value {
+      color: var(--text);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: #000;
+      border: none;
+      border-radius: 30px;
+      padding: 14px 35px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    }
+
+    .btn-gold:active {
+      transform: translateY(0);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulseSuccess {
+      0% {
+        box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.4);
+      }
+      70% {
+        box-shadow: 0 0 0 15px rgba(46, 196, 182, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(46, 196, 182, 0);
+      }
+    }
+
+    @keyframes drawCheck {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="success-container" id="successContainer">
+    <div class="icon-wrapper">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+
+    <h1>Payment Successful!</h1>
+    <p class="subtitle">Your order has been placed successfully.</p>
+
+    {% if order %}
+    <div class="order-details">
+      <div class="details-title">Order Information</div>
+      <div class="detail-row">
+        <span class="detail-label">Order ID</span>
+        <span class="detail-value">{{ order.order_id }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Payment ID</span>
+        <span class="detail-value">{{ order.payment_id }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Name</span>
+        <span class="detail-value">{{ order.name }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Phone</span>
+        <span class="detail-value">{{ order.phone }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">City</span>
+        <span class="detail-value">{{ order.city }}{% if order.state %}, {{ order.state }}{% endif %}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Amount Paid</span>
+        <span class="detail-value" style="color: var(--gold); font-weight: 700;">₹{{ order.amount }}</span>
+      </div>
+    </div>
+    {% else %}
+    <div class="order-details">
+      <p style="text-align: center; color: var(--text-muted); font-size: 0.95rem;">
+        Confirmation details will be sent to your email shortly.
+      </p>
+    </div>
+    {% endif %}
+
+    <div style="margin-top: 10px;">
+      <a href="/" class="btn-gold" id="btnContinue">Continue Shopping</a>
+    </div>
+  </div>
+
+  <script>
+    // Clear cart local storage since payment is successful
+    try {
+      localStorage.removeItem("vasudha_cart");
+      console.log("Cart cleared from local storage.");
+    } catch(e) {
+      console.error("Failed to clear cart:", e);
+    }
+  </script>
+</body>
+</html>

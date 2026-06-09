@@ -233,16 +233,44 @@
             <input id="city" type="text" placeholder="City*" class="form-input" />
             <input id="pincode" type="text" placeholder="Pincode*" class="form-input" />
           </div>
-          <select class="form-input">
-            <option>Select State*</option>
-            <option>Maharashtra</option>
-            <option>Delhi</option>
-            <option>Karnataka</option>
-            <option>Tamil Nadu</option>
-            <option>Gujarat</option>
-            <option>Rajasthan</option>
-            <option>Punjab</option>
-            <option>West Bengal</option>
+          <select class="form-input" id="state">
+            <option value="">Select State*</option>
+            <option value="Andaman and Nicobar">Andaman and Nicobar</option>
+            <option value="Andhra Pradesh">Andhra Pradesh</option>
+            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+            <option value="Assam">Assam</option>
+            <option value="Bihar">Bihar</option>
+            <option value="Chandigarh">Chandigarh</option>
+            <option value="Chhattisgarh">Chhattisgarh</option>
+            <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+            <option value="Daman and Diu">Daman and Diu</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Goa">Goa</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Haryana">Haryana</option>
+            <option value="Himachal Pradesh">Himachal Pradesh</option>
+            <option value="Jharkhand">Jharkhand</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Kerala">Kerala</option>
+            <option value="Ladakh">Ladakh</option>
+            <option value="Lakshadweep">Lakshadweep</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Manipur">Manipur</option>
+            <option value="Meghalaya">Meghalaya</option>
+            <option value="Mizoram">Mizoram</option>
+            <option value="Nagaland">Nagaland</option>
+            <option value="Odisha">Odisha</option>
+            <option value="Puducherry">Puducherry</option>
+            <option value="Punjab">Punjab</option>
+            <option value="Rajasthan">Rajasthan</option>
+            <option value="Sikkim">Sikkim</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+            <option value="Telangana">Telangana</option>
+            <option value="Tripura">Tripura</option>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+            <option value="Uttarakhand">Uttarakhand</option>
+            <option value="West Bengal">West Bengal</option>
           </select>
           <h4>Payment Method</h4>
           <div class="payment-opts">
@@ -753,183 +781,471 @@
           
         ];
 
-
 function getCookie(name) {
     let cookieValue = null;
-
     if (document.cookie && document.cookie !== "") {
         const cookies = document.cookie.split(";");
-
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
-
             if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                cookieValue = decodeURIComponent(
-                    cookie.substring(name.length + 1)
-                );
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
             }
         }
-      }
-      return cookieValue;
     }
-    
-    const csrftoken = getCookie("csrftoken");
-    
-    
+    return cookieValue;
+}
+
+const csrftoken = getCookie("csrftoken");
 let rzpInstance = null;
+// Flag: true when Razorpay popup is open. Prevents .finally() from re-enabling
+// the button prematurely while the user is still interacting with the popup.
+let rzpIsOpen = false;
+
+// Helper function to show error messages
+function showErrorMessage(message, fieldId = null) {
+  // Remove any existing error messages
+  const existingErrors = document.querySelectorAll('.error-message-razorpay');
+  existingErrors.forEach(el => el.remove());
+
+  const errorEl = document.createElement("p");
+  errorEl.className = "error-message-razorpay";
+  errorEl.textContent = "⚠ " + message;
+  errorEl.style.cssText = "color: #d9534f; margin: 10px 0; padding: 10px; background: #f2dede; border-radius: 4px; border-left: 4px solid #d9534f;";
+  
+  if (fieldId) {
+    const field = document.getElementById(fieldId);
+    if (field) {
+      field.insertAdjacentElement("afterend", errorEl);
+    } else {
+      document.querySelector(".checkout-form").insertAdjacentElement("afterbegin", errorEl);
+    }
+  } else {
+    document.querySelector(".checkout-form").insertAdjacentElement("afterbegin", errorEl);
+  }
+
+  setTimeout(() => { errorEl.remove(); }, 4000);
+}
+
+// Validation functions
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function validatePhone(phone) {
+  const phoneRegex = /^[0-9]{10}$/;
+  return phoneRegex.test(phone);
+}
+
+function validatePincode(pincode) {
+  const pincodeRegex = /^[0-9]{6}$/;
+  return pincodeRegex.test(pincode);
+}
+
 function placeOrder() {
-  let name = document.getElementById("name").value.trim()
-  let email= document.getElementById("email").value.trim()
-  let phone = document.getElementById("phone").value.trim()
-  let address1 = document.getElementById("address1").value.trim() 
-  let address2 = document.getElementById("address2").value.trim()
-  let city = document.getElementById("city").value.trim()
-  let pincode = document.getElementById("pincode").value.trim()
+  // Get form values
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const address1 = document.getElementById("address1").value.trim();
+  const address2 = document.getElementById("address2").value.trim();
+  const city = document.getElementById("city").value.trim();
+  const pincode = document.getElementById("pincode").value.trim();
+  const state = document.getElementById("state").value.trim();
 
+  // Clear previous errors
+  document.querySelectorAll('.error-message-razorpay').forEach(el => el.remove());
 
-  if(!name || !email || !phone || !address1 || !city || !pincode ){
-    let payment= document.querySelector(".payment-opts")
-    let msg =document.createElement("p")
-    msg.textContent = "*Please fill all required fields"
-    msg.style.color = "red"
-    payment.append(msg)
-    setTimeout(() => {
-      msg.remove()
-    }, 3000);
-     return
-  }
-  
-  if(phone.length !== 10){
-    let phoneField = document.getElementById("phone")
-    let msg = document.createElement("p")
-    msg.textContent ="Enter valid 10 digit mobile number"
-    msg.style.color = "red";
-    msg.style.margin = "5px 0";
-    phoneField.insertAdjacentElement("afterend", msg);
-    setTimeout(() => {
-      msg.remove()
-    }, 3000);
-    return
-  }
-  
-  if (!email.includes("@")) {
-    let emailField = document.getElementById("email")
-    let msg = document.createElement("p")
-    msg.textContent ="Enter valid email"
-    msg.style.color = "red";
-    msg.style.margin = "5px 0";
-    emailField.insertAdjacentElement("afterend", msg);
-    setTimeout(() => {
-      msg.remove()
-    }, 3000);
+  // Validate required fields
+  if (!name) {
+    showErrorMessage("Please enter your full name", "name");
     return;
   }
 
-    let total = document.getElementById("checkoutTotal")
-        .innerText
-        .replace("₹", "")
-        .trim();
+  if (!email) {
+    showErrorMessage("Please enter your email address", "email");
+    return;
+  }
 
-// ✅ Safe CSRF token initialization inside the function
+  if (!validateEmail(email)) {
+    showErrorMessage("Please enter a valid email address", "email");
+    return;
+  }
+
+  if (!phone) {
+    showErrorMessage("Please enter your phone number", "phone");
+    return;
+  }
+
+  if (!validatePhone(phone)) {
+    showErrorMessage("Please enter a valid 10-digit phone number", "phone");
+    return;
+  }
+
+  if (!address1) {
+    showErrorMessage("Please enter your address", "address1");
+    return;
+  }
+
+  if (!city) {
+    showErrorMessage("Please enter your city", "city");
+    return;
+  }
+
+  if (!pincode) {
+    showErrorMessage("Please enter your pincode", "pincode");
+    return;
+  }
+
+  if (!validatePincode(pincode)) {
+    showErrorMessage("Please enter a valid 6-digit pincode", "pincode");
+    return;
+  }
+
+  if (!state) {
+    showErrorMessage("Please select a state");
+    return;
+  }
+
+  // Get total amount
+  const totalText = document.getElementById("checkoutTotal").innerText;
+  // Strip both currency symbol and commas to avoid isNaN failing on thousands separators (e.g. "1,200")
+  const total = totalText.replace("₹", "").replace(/,/g, "").trim();
+
+  if (!total || isNaN(total) || parseFloat(total) <= 0) {
+    console.error("Cart total validation failed. Text:", totalText, "Parsed:", total);
+    showErrorMessage("Invalid cart total. Please refresh and try again.");
+    return;
+  }
+
+  // Disable submit button to prevent multiple clicks
+  const checkoutBtn = document.querySelector('.checkout-modal .btn-gold');
+  if (checkoutBtn) {
+    checkoutBtn.disabled = true;
+    checkoutBtn.textContent = "Processing...";
+  }
+
+  // Get CSRF token
   const currentCsrf = getCookie("csrftoken");
 
-  console.log("Total:", total);
-  console.log("CSRF:", currentCsrf);
-    
-    // ✅ Scope initialized correctly
-    
-    fetch("/checkout/", {
-        method: "POST",
-        headers: {
-           "X-CSRFToken": currentCsrf,
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: 
-        "name=" + encodeURIComponent(name)+
-        "&email=" + encodeURIComponent(email)+
-        "&phone=" + encodeURIComponent(phone)+
-        "&address1=" + encodeURIComponent(address1)+
-        "&address2=" + encodeURIComponent(address2)+
-        "&city=" + encodeURIComponent(city)+
-        "&pincode=" + encodeURIComponent(pincode)+
-        "&amount=" + total
-    })
-    .then(res => res.json())
-    .then(data => {
-
-        console.log("Response:", data);
-
-        var options = {
-            key: "rzp_live_eoZcUkYVKVR6rY",
-            amount: data.amount,
-            currency: "INR",
-            name: "Divine Creation",
-            order_id: data.order_id,
-
-            handler: function(response) {
-              alert("HANDLER HIT: Paise kat chuke hain!");
-    
-    // ✅ 1. PEHLE POPUP KO HIDE KARO (Django ka wait mat karo)
-    if (rzpInstance && rzpInstance.close) {
-        rzpInstance.close();
+  if (!currentCsrf) {
+    showErrorMessage("Security token not found. Please refresh the page.");
+    if (checkoutBtn) {
+      checkoutBtn.disabled = false;
+      checkoutBtn.textContent = "Place Order →";
     }
-    document.body.style.overflow = 'auto'; // Screen scroll open karo
+    return;
+  }
 
-    console.log("Calling payment-success API to save data...");
-              
-                fetch("/payment-success/",{
-                  method:"POST",
-                  headers:{
-                      "X-CSRFToken": currentCsrf,
-                       "Content-Type": "application/x-www-form-urlencoded"
-                  },
-                  body:
-                   "payment_id=" + encodeURIComponent(response.razorpay_payment_id) +
-                   "&order_id=" + encodeURIComponent(response.razorpay_order_id) +
-                   "&name=" + encodeURIComponent(name) +
-                   "&email=" + encodeURIComponent(email) +
-                   "&phone=" + encodeURIComponent(phone) +
-                   "&address1=" + encodeURIComponent(address1) +
-                   "&address2=" + encodeURIComponent(address2) +
-                   "&city=" + encodeURIComponent(city) +
-                   "&pincode=" + encodeURIComponent(pincode) +
-                   "&amount=" + encodeURIComponent(total)
-                })
-                .then(res=>res.json())
-                .then(data=>{
-                  if(data.status === "success"){
-           localStorage.removeItem("cart");
-           document.getElementById("orderSuccess").style.display = "flex";
-       } else {
-           // 🚨 Agar database me koi galti hui, toh screen par alert aayega
-           alert("Paise kat gaye par database me save nahi hua: " + data.message);
-       }
-                   console.log(data);
-                })
-                .catch(err => {
-                    console.log("Error inside success handler fetch:", err);
-                });
-            },
-            modal: {
-                ondismiss: function() {
-                    console.log("RAZORPAY CLOSED");
-                }
-            }
-        };
+  // Send checkout request to server
+  fetch("/checkout/", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": currentCsrf,
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: 
+      "name=" + encodeURIComponent(name) +
+      "&email=" + encodeURIComponent(email) +
+      "&phone=" + encodeURIComponent(phone) +
+      "&address1=" + encodeURIComponent(address1) +
+      "&address2=" + encodeURIComponent(address2) +
+      "&city=" + encodeURIComponent(city) +
+      "&pincode=" + encodeURIComponent(pincode) +
+      "&state=" + encodeURIComponent(state) +
+      "&amount=" + encodeURIComponent(total)
+  })
+  .then(res => res.json().then(data => ({ ok: res.ok, data })))
+  .then(({ ok, data }) => {
+    if (!ok) {
+      throw new Error(data.message || data.error || 'Checkout failed');
+    }
+    return data;
+  })
+  .then(data => {
+    if (!data.order_id || !data.amount) {
+      throw new Error(data.message || 'Invalid response from server');
+    }
 
-        // ✅ Correct variable mapping
-        rzpInstance = new Razorpay(options);
-        rzpInstance.on('payment.failed', function (response) {
-            console.log("PAYMENT FAILED");
-            console.log(response.error);
-        });
-        rzpInstance.open();
+    // Razorpay payment options
+    const razorpayOptions = {
+      key: data.key || "rzp_live_eoZcUkYVKVR6rY", // Map correctly to 'key' parameter expected by Razorpay SDK
+      amount: data.amount,
+      currency: "INR",
+      name: "Divine Creations",
+      description: "Purchase from Divine Creations",
+      order_id: data.order_id,
+      customer_notif: 1,
+      notes: {
+        customer_name: name,
+        customer_email: email,
+        customer_phone: phone
+      },
+      handler: handlePaymentSuccess,
+      
+      modal: {
+        ondismiss: handlePaymentDismiss
+      },
+      theme: {
+        color: "#d4af37"
+      }
+    };
 
-    })
-    .catch(err => {
-        console.log("Outer Fetch Error:", err);
+    if (typeof Razorpay === 'undefined') {
+      throw new Error('Razorpay payment gateway is not available');
+    }
+
+    try {
+      rzpInstance = new Razorpay(razorpayOptions);
+      rzpInstance.on('payment.failed', handlePaymentFailed);
+      rzpInstance.open();
+      // Mark popup as open so .finally() does NOT re-enable the button.
+      // The individual handlers (dismiss/failed/success) are responsible for re-enabling.
+      rzpIsOpen = true;
+      console.log('[Razorpay] Popup opened. Order ID:', data.order_id);
+
+      // Fallback cleanup - if payment modal is still open after 5 minutes, force close
+      const fallbackTimer = setTimeout(() => {
+        console.warn('[Razorpay] Fallback timeout: force-closing popup.');
+        cleanupRazorpayElements();
+      }, 300000); // 5 minutes
+
+      // Clear timer if modal is closed before timeout
+      if (rzpInstance && typeof rzpInstance.on === 'function') {
+        rzpInstance.on('payment.success', () => clearTimeout(fallbackTimer));
+        rzpInstance.on('payment.failed', () => clearTimeout(fallbackTimer));
+      }
+    } catch (err) {
+      console.error('[Razorpay] Failed to open popup:', err);
+      throw new Error('Unable to open payment gateway');
+    }
+  })
+  .catch(err => {
+    console.error('[placeOrder] Checkout error:', err);
+    showErrorMessage(err.message || 'Unable to process checkout. Please try again.');
+  })
+  .finally(() => {
+    // ROOT CAUSE FIX #3: Only re-enable button if Razorpay popup did NOT open.
+    // If popup is open, dismiss/failed/success handlers will re-enable the button.
+    if (!rzpIsOpen && checkoutBtn) {
+      console.log('[placeOrder] Razorpay popup did not open — re-enabling button from finally.');
+      checkoutBtn.disabled = false;
+      checkoutBtn.textContent = "Place Order →";
+    }
+  });
+}
+
+// Helper function to clean up Razorpay DOM elements safely
+function cleanupRazorpayElements() {
+  console.log('[cleanupRazorpayElements] Cleaning up Razorpay popup and DOM elements.');
+
+  // ROOT CAUSE FIX #3 (part 2): Reset flag so future placeOrder() calls work correctly.
+  rzpIsOpen = false;
+
+  try {
+    // Close Razorpay instance if it exists
+    if (rzpInstance && typeof rzpInstance.close === 'function') {
+      rzpInstance.close();
+      console.log('[cleanupRazorpayElements] rzpInstance.close() called.');
+    }
+  } catch (e) {
+    console.warn('[cleanupRazorpayElements] rzpInstance.close() failed:', e);
+  }
+
+  try {
+    // Remove all Razorpay-injected DOM elements
+    const selectors = [
+      '.razorpay-container',
+      'iframe.razorpay-checkout-frame',
+      '.razorpay-backdrop',
+      '.razorpay-modal',
+      '[data-testid="razorpay-checkout"]'
+    ];
+    let removed = 0;
+    selectors.forEach(selector => {
+      document.querySelectorAll(selector).forEach(el => {
+        el.remove();
+        removed++;
+      });
     });
+    console.log('[cleanupRazorpayElements] Removed', removed, 'Razorpay DOM element(s).');
+
+    // Reset body scroll
+    document.body.style.overflow = 'auto';
+  } catch (e) {
+    console.warn('[cleanupRazorpayElements] DOM cleanup failed:', e);
+  }
+}
+
+// Handle successful payment — called by Razorpay SDK after user completes payment.
+// At this point the Razorpay popup has already closed automatically.
+function handlePaymentSuccess(response) {
+  console.log('[handlePaymentSuccess] Called with response:', JSON.stringify(response));
+  const currentCsrf = getCookie("csrftoken");
+
+  if (!response.razorpay_payment_id || !response.razorpay_order_id) {
+    console.error('[handlePaymentSuccess] Invalid response — missing payment_id or order_id.');
+    handlePaymentError('Payment response invalid');
+    return;
+  }
+
+  console.log('[handlePaymentSuccess] Sending verification to /payment-success/...');
+  console.log('  payment_id:', response.razorpay_payment_id);
+  console.log('  order_id:', response.razorpay_order_id);
+  console.log('  signature:', response.razorpay_signature);
+
+  // Popup auto-closed by Razorpay on success; clean up any leftover DOM elements.
+  cleanupRazorpayElements();
+
+  // Send payment verification to Django backend
+  fetch("/payment-success/", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": currentCsrf,
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body:
+      "razorpay_payment_id=" + encodeURIComponent(response.razorpay_payment_id) +
+      "&razorpay_order_id=" + encodeURIComponent(response.razorpay_order_id) +
+      "&razorpay_signature=" + encodeURIComponent(response.razorpay_signature || '')
+  })
+  .then(res => {
+    console.log('[handlePaymentSuccess] Server responded with HTTP', res.status);
+    return res.json();
+  })
+  .then(data => {
+    console.log('[handlePaymentSuccess] Server response body:', JSON.stringify(data));
+    if (data.status === "success") {
+      console.log('[handlePaymentSuccess] Verification successful. Showing success modal.');
+
+      // Hide checkout modal
+      const checkoutOverlay = document.getElementById("checkoutOverlay");
+      if (checkoutOverlay) checkoutOverlay.style.display = "none";
+
+      // Show inline success modal briefly before redirect
+      const orderSuccess = document.getElementById("orderSuccess");
+      if (orderSuccess) orderSuccess.style.display = "flex";
+
+      // Clear cart from localStorage on confirmed success
+      try { localStorage.removeItem("vasudha_cart"); } catch(e) {}
+
+      // Redirect to the dedicated success page after 2 seconds
+      setTimeout(() => {
+        window.location.href = "/order-success/?order_id=" + encodeURIComponent(response.razorpay_order_id);
+      }, 2000);
+    } else {
+      console.error('[handlePaymentSuccess] Verification FAILED. Server said:', data.message);
+      handlePaymentError(data.message || 'Payment verification failed. Contact support.');
+    }
+  })
+  .catch(err => {
+    console.error('[handlePaymentSuccess] Fetch error during verification:', err);
+    handlePaymentError('Unable to verify payment. Please contact support with your payment ID: ' + response.razorpay_payment_id);
+  });
+}
+
+// Handle failed payment — called by rzpInstance.on('payment.failed', ...)
+// ROOT CAUSE FIX #2: response.error can be undefined; always use safe access.
+function handlePaymentFailed(response) {
+  console.error('[handlePaymentFailed] Payment failed. Full response:', JSON.stringify(response));
+
+  // Safe access — response.error may not exist for all failure types
+  const errorCode = (response && response.error && response.error.code) ? response.error.code : 'UNKNOWN';
+  const errorDesc = (response && response.error && response.error.description) ? response.error.description : 'Payment failed. Please try again.';
+  const errorReason = (response && response.error && response.error.reason) ? response.error.reason : '';
+
+  console.error('[handlePaymentFailed] Code:', errorCode, '| Reason:', errorReason, '| Description:', errorDesc);
+
+  // cleanupRazorpayElements() also resets rzpIsOpen = false
+  cleanupRazorpayElements();
+
+  // Re-enable checkout button so user can retry
+  const checkoutBtn = document.querySelector('.checkout-modal .btn-gold');
+  if (checkoutBtn) {
+    checkoutBtn.disabled = false;
+    checkoutBtn.textContent = "Place Order →";
+  }
+
+  showErrorMessage('Payment failed: ' + errorDesc);
+}
+
+// Handle payment dismissal — called when user manually closes the Razorpay popup
+function handlePaymentDismiss() {
+  console.log('[handlePaymentDismiss] User dismissed the Razorpay popup.');
+
+  // cleanupRazorpayElements() also resets rzpIsOpen = false
+  cleanupRazorpayElements();
+
+  // Re-enable checkout button so user can retry
+  const checkoutBtn = document.querySelector('.checkout-modal .btn-gold');
+  if (checkoutBtn) {
+    checkoutBtn.disabled = false;
+    checkoutBtn.textContent = "Place Order →";
+  }
+  console.log('[handlePaymentDismiss] Button re-enabled. User can retry.');
+}
+
+// Handle payment error
+function handlePaymentError(message) {
+  console.error('Payment error:', message);
+  showErrorMessage(message || 'Payment could not be processed');
+  // Re-enable checkout button if modal is still visible
+  const checkoutModal = document.getElementById('checkoutOverlay');
+  if (checkoutModal && checkoutModal.style.display !== 'none') {
+    const checkoutBtn = document.querySelector('.checkout-modal .btn-gold');
+    if (checkoutBtn) {
+      checkoutBtn.disabled = false;
+      checkoutBtn.textContent = "Place Order →";
+    }
+  }
+}
+
+function closeOrder(e) {
+  if (e && e.preventDefault) {
+    e.preventDefault();
+  }
+  
+  try {
+    // Clear cart from localStorage
+    localStorage.removeItem("vasudha_cart");
+    
+    // Reset all form inputs in checkout modal
+    const checkoutModal = document.querySelector('.checkout-modal');
+    if (checkoutModal) {
+      checkoutModal.querySelectorAll('input, textarea').forEach(input => {
+        input.value = "";
+      });
+      checkoutModal.querySelector('select').value = "Select State*";
+    }
+    
+    // Clear any error messages
+    document.querySelectorAll('.error-message-razorpay').forEach(el => el.remove());
+    
+    // Close order success modal
+    const orderSuccessModal = document.getElementById("orderSuccess");
+    if (orderSuccessModal) {
+      orderSuccessModal.style.display = "none";
+    }
+    
+    // Close checkout modal
+    const checkoutOverlay = document.getElementById("checkoutOverlay");
+    if (checkoutOverlay) {
+      checkoutOverlay.style.display = "none";
+    }
+    
+    // Update cart badge
+    // ROOT CAUSE FIX #4: updateCartBadge() does not exist. Correct function is updateCartUI().
+    if (typeof updateCartUI === 'function') updateCartUI();
+    
+    // Redirect to home
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 500);
+  } catch (err) {
+    console.error('Error in closeOrder:', err);
+    window.location.href = "/";
+  }
 }
   </script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
