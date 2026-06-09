@@ -798,6 +798,7 @@ function getCookie(name) {
 
 const csrftoken = getCookie("csrftoken");
 let rzpInstance = null;
+let paymentHandled = false;
 // Flag: true when Razorpay popup is open. Prevents .finally() from re-enabling
 // the button prematurely while the user is still interacting with the popup.
 let rzpIsOpen = false;
@@ -964,13 +965,13 @@ function placeOrder() {
     return data;
   })
   .then(data => {
-    if (!data.order_id || !data.amount) {
+    if (!data.order_id || !data.amount || !data.key) {
       throw new Error(data.message || 'Invalid response from server');
     }
 
     // Razorpay payment options
     const razorpayOptions = {
-      key: data.key || "rzp_live_eoZcUkYVKVR6rY", // Map correctly to 'key' parameter expected by Razorpay SDK
+      key: data.key,
       amount: data.amount,
       currency: "INR",
       name: "Divine Creations",
@@ -982,8 +983,10 @@ function placeOrder() {
         customer_email: email,
         customer_phone: phone
       },
-      handler: handlePaymentSuccess,
-      
+      handler: function(response) {
+        console.log('[Razorpay] handler triggered', response);
+        handlePaymentSuccess(response);
+      },
       modal: {
         ondismiss: handlePaymentDismiss
       },
@@ -996,22 +999,29 @@ function placeOrder() {
       throw new Error('Razorpay payment gateway is not available');
     }
 
+    if (!/^order_/.test(data.order_id)) {
+      console.warn('[placeOrder] Backend returned non-standard Razorpay order_id:', data.order_id);
+    }
+
+    console.log('[placeOrder] Razorpay checkout launching with order:', data.order_id, 'amount:', data.amount);
+
     try {
       rzpInstance = new Razorpay(razorpayOptions);
+      rzpInstance.on('payment.success', function(response) {
+        console.log('[Razorpay] event payment.success received', response);
+        handlePaymentSuccess(response);
+      });
       rzpInstance.on('payment.failed', handlePaymentFailed);
       rzpInstance.open();
-      // Mark popup as open so .finally() does NOT re-enable the button.
-      // The individual handlers (dismiss/failed/success) are responsible for re-enabling.
+      paymentHandled = false;
       rzpIsOpen = true;
       console.log('[Razorpay] Popup opened. Order ID:', data.order_id);
 
-      // Fallback cleanup - if payment modal is still open after 5 minutes, force close
       const fallbackTimer = setTimeout(() => {
         console.warn('[Razorpay] Fallback timeout: force-closing popup.');
         cleanupRazorpayElements();
       }, 300000); // 5 minutes
 
-      // Clear timer if modal is closed before timeout
       if (rzpInstance && typeof rzpInstance.on === 'function') {
         rzpInstance.on('payment.success', () => clearTimeout(fallbackTimer));
         rzpInstance.on('payment.failed', () => clearTimeout(fallbackTimer));
@@ -1040,21 +1050,20 @@ function placeOrder() {
 function cleanupRazorpayElements() {
   console.log('[cleanupRazorpayElements] Cleaning up Razorpay popup and DOM elements.');
 
-  // ROOT CAUSE FIX #3 (part 2): Reset flag so future placeOrder() calls work correctly.
   rzpIsOpen = false;
 
   try {
-    // Close Razorpay instance if it exists
     if (rzpInstance && typeof rzpInstance.close === 'function') {
       rzpInstance.close();
       console.log('[cleanupRazorpayElements] rzpInstance.close() called.');
     }
   } catch (e) {
     console.warn('[cleanupRazorpayElements] rzpInstance.close() failed:', e);
+  } finally {
+    rzpInstance = null;
   }
 
   try {
-    // Remove all Razorpay-injected DOM elements
     const selectors = [
       '.razorpay-container',
       'iframe.razorpay-checkout-frame',
@@ -1070,8 +1079,6 @@ function cleanupRazorpayElements() {
       });
     });
     console.log('[cleanupRazorpayElements] Removed', removed, 'Razorpay DOM element(s).');
-
-    // Reset body scroll
     document.body.style.overflow = 'auto';
   } catch (e) {
     console.warn('[cleanupRazorpayElements] DOM cleanup failed:', e);
@@ -1079,13 +1086,20 @@ function cleanupRazorpayElements() {
 }
 
 // Handle successful payment — called by Razorpay SDK after user completes payment.
-// At this point the Razorpay popup has already closed automatically.
 function handlePaymentSuccess(response) {
+  if (paymentHandled) {
+    console.warn('[handlePaymentSuccess] Duplicate payment success callback ignored.');
+    return;
+  }
+  paymentHandled = true;
+
   console.log('[handlePaymentSuccess] Called with response:', JSON.stringify(response));
   const currentCsrf = getCookie("csrftoken");
+  const checkoutBtn = document.querySelector('.checkout-modal .btn-gold');
+  let verificationSucceeded = false;
 
-  if (!response.razorpay_payment_id || !response.razorpay_order_id) {
-    console.error('[handlePaymentSuccess] Invalid response — missing payment_id or order_id.');
+  if (!response.razorpay_payment_id || !response.razorpay_order_id || !response.razorpay_signature) {
+    console.error('[handlePaymentSuccess] Invalid response — missing payment_id or order_id or signature.');
     handlePaymentError('Payment response invalid');
     return;
   }
@@ -1095,10 +1109,11 @@ function handlePaymentSuccess(response) {
   console.log('  order_id:', response.razorpay_order_id);
   console.log('  signature:', response.razorpay_signature);
 
-  // Popup auto-closed by Razorpay on success; clean up any leftover DOM elements.
-  cleanupRazorpayElements();
+  if (!currentCsrf) {
+    console.error('[handlePaymentSuccess] CSRF token missing. Cannot verify payment.');
+  }
 
-  // Send payment verification to Django backend
+  console.log('[handlePaymentSuccess] About to POST to /payment-success/');
   fetch("/payment-success/", {
     method: "POST",
     headers: {
@@ -1112,36 +1127,45 @@ function handlePaymentSuccess(response) {
   })
   .then(res => {
     console.log('[handlePaymentSuccess] Server responded with HTTP', res.status);
-    return res.json();
+    return res.json().then(data => ({ ok: res.ok, data }));
   })
-  .then(data => {
+  .then(({ ok, data }) => {
     console.log('[handlePaymentSuccess] Server response body:', JSON.stringify(data));
-    if (data.status === "success") {
-      console.log('[handlePaymentSuccess] Verification successful. Showing success modal.');
-
-      // Hide checkout modal
-      const checkoutOverlay = document.getElementById("checkoutOverlay");
-      if (checkoutOverlay) checkoutOverlay.style.display = "none";
-
-      // Show inline success modal briefly before redirect
-      const orderSuccess = document.getElementById("orderSuccess");
-      if (orderSuccess) orderSuccess.style.display = "flex";
-
-      // Clear cart from localStorage on confirmed success
-      try { localStorage.removeItem("vasudha_cart"); } catch(e) {}
-
-      // Redirect to the dedicated success page after 2 seconds
-      setTimeout(() => {
-        window.location.href = "/order-success/?order_id=" + encodeURIComponent(response.razorpay_order_id);
-      }, 2000);
-    } else {
-      console.error('[handlePaymentSuccess] Verification FAILED. Server said:', data.message);
-      handlePaymentError(data.message || 'Payment verification failed. Contact support.');
+    if (!ok) {
+      throw new Error(data.message || 'Payment verification failed');
     }
+    if (data.status !== "success") {
+      throw new Error(data.message || 'Payment verification failed');
+    }
+    verificationSucceeded = true;
+
+    console.log('[handlePaymentSuccess] Verification successful. Closing popup and redirecting.');
+    cleanupRazorpayElements();
+
+    const checkoutOverlay = document.getElementById("checkoutOverlay");
+    if (checkoutOverlay) checkoutOverlay.style.display = "none";
+
+    const orderSuccess = document.getElementById("orderSuccess");
+    if (orderSuccess) orderSuccess.style.display = "flex";
+
+    try { localStorage.removeItem("vasudha_cart"); } catch (e) {}
+
+    setTimeout(() => {
+      window.location.href = "/order-success/?order_id=" + encodeURIComponent(response.razorpay_order_id);
+    }, 2000);
   })
   .catch(err => {
-    console.error('[handlePaymentSuccess] Fetch error during verification:', err);
-    handlePaymentError('Unable to verify payment. Please contact support with your payment ID: ' + response.razorpay_payment_id);
+    console.error('[handlePaymentSuccess] Verification failed:', err);
+    handlePaymentError(err.message || 'Unable to verify payment. Please contact support.');
+  })
+  .finally(() => {
+    if (!verificationSucceeded) {
+      cleanupRazorpayElements();
+      if (checkoutBtn) {
+        checkoutBtn.disabled = false;
+        checkoutBtn.textContent = "Place Order →";
+      }
+    }
   });
 }
 
@@ -1190,14 +1214,11 @@ function handlePaymentDismiss() {
 function handlePaymentError(message) {
   console.error('Payment error:', message);
   showErrorMessage(message || 'Payment could not be processed');
-  // Re-enable checkout button if modal is still visible
-  const checkoutModal = document.getElementById('checkoutOverlay');
-  if (checkoutModal && checkoutModal.style.display !== 'none') {
-    const checkoutBtn = document.querySelector('.checkout-modal .btn-gold');
-    if (checkoutBtn) {
-      checkoutBtn.disabled = false;
-      checkoutBtn.textContent = "Place Order →";
-    }
+
+  const checkoutBtn = document.querySelector('.checkout-modal .btn-gold');
+  if (checkoutBtn) {
+    checkoutBtn.disabled = false;
+    checkoutBtn.textContent = "Place Order →";
   }
 }
 
