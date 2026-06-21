@@ -388,9 +388,10 @@ input, select, textarea { font-family: var(--font-sans); }
 }
 .hero-slides { position: absolute; inset: 0; }
 .hero-slide {
-  position: absolute; inset: 0;
-  opacity: 0;
-  transition: opacity 1s ease;
+      position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1s ease;
 }
 
 /* Blurred background fills empty gaps — same image, blurred & scaled */
@@ -407,10 +408,12 @@ input, select, textarea { font-family: var(--font-sans); }
 
 /* Main image — full visibility, no cropping */
 .hero-bg-img {
-width: 100%;
+    position: absolute;
+    inset: 0;
+    width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: top;
+    object-position: center center;
 }
 
 /* Mobile: cover fills better on portrait screens */
@@ -421,8 +424,8 @@ width: 100%;
         aspect-ratio:auto !important;
   }
   .hero-bg-img {
-          object-fit:cover;
-        object-position: center 10%;
+          /* object-position: center top; */
+          margin-top: 20px;
   }
   .hero-slide::before {
     display: none;
