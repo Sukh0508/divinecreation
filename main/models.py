@@ -22,13 +22,22 @@ class Product_list(models.Model):
     old = models.IntegerField(null=True, blank=True)
     image = models.ImageField(upload_to="product",blank=True,null=True)
     stars = models.CharField(max_length=10) 
-    review = models.CharField(max_length=100 , null=True , blank=True)
     desc= models.TextField()
-    badge = models.CharField(max_length=20, null=True, blank=True) 
-    badgeLabel = models.CharField(max_length=50, null=True, blank=True)
+   
 
     def __str__(self):
         return self.name 
+    
+class ProductImage(models.Model):
+    product = models.ForeignKey(
+        Product_list,
+        on_delete=models.CASCADE,
+        related_name="gallery"
+    )
+    image = models.ImageField(upload_to="product/gallery")
+
+    def __str__(self):
+        return self.product.name
 
 class About_img(models.Model):
     image = models.ImageField(upload_to= 'about')

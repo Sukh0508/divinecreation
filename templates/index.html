@@ -184,9 +184,16 @@
       <button class="close-modal" id="closeQuickView">✕</button>
       <div class="qv-grid">
         <div class="qv-img">
-          <img id="qvImg" src="" alt="" />
-          <span id="qvBadge" class="product-badge"></span>
-        </div>
+
+    <button class="qv-prev" onclick="changeQVSlide(-1)">❮</button>
+
+    <img id="qvImg" src="" alt="">
+
+    <button class="qv-next" onclick="changeQVSlide(1)">❯</button>
+
+    <span id="qvBadge" class="product-badge"></span>
+
+</div>
         <div class="qv-info">
           <p class="qv-category" id="qvCategory"></p>
           <h2 id="qvName"></h2>
@@ -757,29 +764,34 @@
   <script>
   
 
-    const PRODUCTS = [
-      {% for p in products %}
-    {
-      id: {{ p.id }},
-      name: "{{ p.name|escapejs }}",
-        cat : "{{ p.cat|default:'' }}",
+ const PRODUCTS = [
+{% for p in products %}
+{
+    id: {{ p.id }},
+    name: "{{ p.name|escapejs }}",
+    cat: "{{ p.cat|default:'' }}",
 
-          price : {{ p.price |default:0 }},
-      old: {{ p.old |default:0 }},
-      {% if p.image and p.image.name %}
-      img: "{{ p.image.url }}",
-        {% else %}
-    img: "/static/default.jpg",
-      {% endif %}
+    price: {{ p.price|default:0 }},
+    old: {{ p.old|default:0 }},
+
+    // Multiple Images
+    img: [
+        {% if p.image and p.image.name %}
+        "{{ p.image.url }}"{% if p.gallery.all %},{% endif %}
+        {% endif %}
+
+        {% for img in p.gallery.all %}
+        "{{ img.image.url }}"{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    ],
 
     stars: "{{ p.stars|default:'' }}",
-      reviews: "{{ p.reviews|default:'' }}",
-        desc: "{{ p.desc|escapejs }}" 
-          }{% if not forloop.last %}, {% endif %}
-    {% endfor %}
-          
-          
-        ];
+    reviews: "{{ p.review|default:'' }}",
+    desc: "{{ p.desc|escapejs }}"
+}
+{% if not forloop.last %},{% endif %}
+{% endfor %}
+];
 
 function getCookie(name) {
     let cookieValue = null;

@@ -192,14 +192,22 @@ function closeWishlist() {
   document.getElementById('wishlistDrawer').classList.remove('open');
   document.getElementById('wishlistOverlay').classList.remove('active');
 }
+
+// let qvQty = 1;
+// let currentImage = 0;
+
 function openQuickView(id) {
+     console.log("Quick View Open");
+    console.log(id);
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
 
-  currentQV = p; 
-  qvQty = 1;
+   currentQV = p;       // IMPORTANT
+    currentSlide = 0;    // IMPORTANT
+    qvQty = 1;
 
-  document.getElementById('qvImg').src = p.img;
+
+ document.getElementById("qvImg").src = p.img[currentSlide];
   document.getElementById('qvImg').alt = p.name;
   document.getElementById('qvCategory').textContent = p.cat.charAt(0).toUpperCase() + p.cat.slice(1);
   document.getElementById('qvName').textContent = p.name;
@@ -258,6 +266,22 @@ function changeQty(delta) {
   document.getElementById('qvQty').textContent = qvQty;
 }
 
+function changeQVSlide(dir){
+
+    if(!currentQV) return;
+
+    currentSlide += dir;
+
+    if(currentSlide < 0)
+        currentSlide = currentQV.img.length - 1;
+
+    if(currentSlide >= currentQV.img.length)
+        currentSlide = 0;
+
+    document.getElementById("qvImg").src =
+        currentQV.img[currentSlide];
+}
+
 // ---- FILTERS ----
 function initFilters() {
   document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -301,39 +325,104 @@ function productCard(p) {
 
   return `
     <div class="product-card fade-in">
+
       <div class="product-img-wrap">
-        <img src="${p.img}" alt="${p.name}" loading="lazy"/>
-        ${p.badge ? `<span class="product-badge badge-${p.badge}">${p.badgeLabel}</span>` : ''}
+
+        <div class="product-slider">
+
+          ${p.img.map((image,index)=>`
+             ${
+      image
+      ? `
+        <img
+          src="${image}"
+          alt="${p.name}"
+          loading="lazy"
+          class="slide-img ${index===0 ? 'active' : ''}"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        >
+        <div class="no-image">${p.name}</div>
+      `
+      : `
+        <div class="no-image">${p.name}</div>
+      `
+    }
+            
         
-        <div class="product-actions">
-          <button class="add-cart-btn" onclick="addToCart(${JSON.stringify(p).replace(/"/g,'&quot;')}, 1)">Add to Cart</button>
-          <button class="quick-view-btn" onclick="openQuickView(${p.id})">👁</button>
-          <button class="wish-btn ${inWish ? 'active' : ''}" onclick="toggleWishlist(${JSON.stringify(p).replace(/"/g,'&quot;')})">♡</button>
+          `).join("")}
+
+          ${
+            p.img.length > 1
+            ? `
+              <button class="prev-btn" onclick="changeSlide(this,-1)">❮</button>
+              <button class="next-btn" onclick="changeSlide(this,1)">❯</button>
+            `
+            : ""
+          }
+
         </div>
+
+        ${p.badge ? `<span class="product-badge badge-${p.badge}">${p.badgeLabel}</span>` : ''}
+
+        <div class="product-actions">
+          <button class="add-cart-btn"
+            onclick="addToCart(${JSON.stringify(p).replace(/"/g,'&quot;')},1)">
+            Add to Cart
+          </button>
+
+          <button class="quick-view-btn"
+            onclick="openQuickView(${p.id})">
+            👁
+          </button>
+
+          <button class="wish-btn ${inWish ? 'active' : ''}"
+            onclick="toggleWishlist(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+            ♡
+          </button>
+        </div>
+
       </div>
 
       <div class="product-info">
+
         <p class="product-cat">${p.cat}</p>
+
         <h3 class="product-name">${p.name}</h3>
-        <div class="product-stars">★★★★★ <span>${p.reviews}</span></div>
+
+        <div class="product-stars">
+          ★★★★★ <span>${p.reviews}</span>
+        </div>
 
         ${
           (p.price !== undefined && p.price !== null)
           ? `
-          <div class="product-pricing">
-            <span class="price-now">₹${p.price.toLocaleString()}</span>
-            ${
-              (p.old && p.old > p.price)
-              ? `<span class="price-old">₹${p.old.toLocaleString()}</span>
-                 <span class="price-disc">-${Math.round((1 - p.price / p.old) * 100)}%</span>`
-              : ''
-            }
-          </div>
+            <div class="product-pricing">
+
+              <span class="price-now">
+                ₹${p.price.toLocaleString()}
+              </span>
+
+              ${
+                (p.old && p.old > p.price)
+                ? `
+                  <span class="price-old">
+                    ₹${p.old.toLocaleString()}
+                  </span>
+
+                  <span class="price-disc">
+                    -${Math.round((1 - p.price / p.old) * 100)}%
+                  </span>
+                `
+                : ''
+              }
+
+            </div>
           `
           : ''
         }
 
       </div>
+
     </div>
   `;
 }
@@ -619,4 +708,28 @@ const PAGES = {
 function showPage(key) {
   document.getElementById('pageModalContent').innerHTML = PAGES[key] || '';
   document.getElementById('pageModal').style.display = 'flex';
+}
+function changeSlide(btn, dir) {
+
+    const slider = btn.closest(".product-slider");
+    const slides = slider.querySelectorAll(".slide-img");
+
+    let current = 0;
+
+    slides.forEach((img, index) => {
+        if (img.classList.contains("active")) {
+            current = index;
+            img.classList.remove("active");
+        }
+    });
+
+    current += dir;
+
+    if (current < 0)
+        current = slides.length - 1;
+
+    if (current >= slides.length)
+        current = 0;
+
+    slides[current].classList.add("active");
 }
