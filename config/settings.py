@@ -117,8 +117,3 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
-
-# Razorpay Configuration
-RAZORPAY_KEY_ID = "rzp_live_eoZcUkYVKVR6rY"
-RAZORPAY_KEY_SECRET = "bdRI1hwNlql4JsYVfEqvxmuk"
-RAZORPAY_WEBHOOK_SECRET = "" # To be configured in Razorpay dashboard

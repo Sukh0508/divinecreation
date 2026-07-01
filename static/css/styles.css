@@ -1069,3 +1069,62 @@ select.form-input { cursor: pointer; }
     padding:20px;
     border-radius:10px;
 }
+.testimonialSwiper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.swiper-wrapper {
+    align-items: stretch;
+}
+.swiper-pagination {
+    position: relative !important;
+    margin-top: 20px;
+}
+
+.swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.testi-card {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.testi-stars {
+    color: #ffb400;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.testi-card p {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.testi-author strong {
+    color: #222;
+}
+
+.swiper-button-next,
+.swiper-pagination,
+.swiper-button-prev {
+    color: #000;
+    display: none !important;
+}
+
+.swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: #999;
+    opacity: 1;
+    margin: 0 5px !important;
+}
+
+.swiper-pagination-bullet-active {
+    background: #000;
+}

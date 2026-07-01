@@ -14,6 +14,7 @@
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&family=Great+Vibes&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 </head>
 
 <body>
@@ -122,13 +123,15 @@
     <button class="close-search" id="closeSearch">✕</button>
     <div class="search-inner">
       <p class="search-label">What are you looking for?</p>
-      <input type="text" id="searchInput" placeholder="Search products…" autocomplete="off" />
-      <div class="search-suggestions">
+      <form action="{% url 'home' %}" method="get" class="search-form">
+        <input type="text" name="q" id="searchInput" placeholder="Search products…" autocomplete="off" />
+      </form>
+      <!-- <div class="search-suggestions">
         <span data-cat="krishna hand">Krishna hands </span>
         <span data-cat="idol">Idol</span>
         <span data-cat="frame">Photo Frames</span>
-        <!-- <span>Corporate Gifts</span> -->
-      </div>
+        
+      </div> -->
     </div>
   </div>
 
@@ -185,15 +188,15 @@
       <div class="qv-grid">
         <div class="qv-img">
 
-    <button class="qv-prev" onclick="changeQVSlide(-1)">❮</button>
+          <button class="qv-prev" onclick="changeQVSlide(-1)">❮</button>
 
-    <img id="qvImg" src="" alt="">
+          <img id="qvImg" src="" alt="">
 
-    <button class="qv-next" onclick="changeQVSlide(1)">❯</button>
+          <button class="qv-next" onclick="changeQVSlide(1)">❯</button>
 
-    <span id="qvBadge" class="product-badge"></span>
+          <span id="qvBadge" class="product-badge"></span>
 
-</div>
+        </div>
         <div class="qv-info">
           <p class="qv-category" id="qvCategory"></p>
           <h2 id="qvName"></h2>
@@ -281,9 +284,7 @@
           </select>
           <h4>Payment Method</h4>
           <div class="payment-opts">
-            <!-- <label class="pay-opt"><input type="radio" name="pay" checked/> Cash on Delivery</label> -->
-            <label class="pay-opt"><input type="radio" name="pay" /> UPI / Net Banking</label>
-            <label class="pay-opt"><input type="radio" name="pay" /> Credit / Debit Card</label>
+            <label class="pay-opt"><input type="radio" name="pay" checked /> Cash on Delivery</label>
           </div>
           <button class="btn-gold btn-full" onclick="placeOrder()">Place Order →</button>
         </div>
@@ -302,9 +303,19 @@
   <div class="modal-overlay" id="orderSuccess" style="display:none">
     <div class="success-modal">
       <div class="success-icon">✓</div>
-      <h2>Order Placed!</h2>
-      <p>Thank you for shopping with Divine Creations. You'll receive a confirmation shortly.</p>
-      <button class="btn-gold" onclick="closeOrder()">Continue Shopping</button>
+      <h2>Order Successfully Placed</h2>
+      <div class="order-summary" style="margin: 18px 0 24px; text-align:left;">
+        <div class="summary-row"><span>Order ID</span><span id="successOrderId"></span></div>
+        <div class="summary-row"><span>Customer Name</span><span id="successCustomerName"></span></div>
+        <div class="summary-row"><span>Order Date</span><span id="successOrderDate"></span></div>
+        <div class="summary-row"><span>Payment Method</span><span id="successPaymentMethod"></span></div>
+        <div class="summary-row"><span>Total Amount</span><span id="successOrderAmount"></span></div>
+        <div class="summary-row"><span>Estimated Delivery</span><span id="successEstimatedDelivery"></span></div>
+      </div>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn-gold" onclick="closeOrder()">Continue Shopping</button>
+        <a href="/track-order/" class="btn-outline" id="trackOrderBtn">Track Order</a>
+      </div>
     </div>
   </div>
 
@@ -458,9 +469,9 @@
         <!-- FILTERS -->
         <div class="filters fade-in" id="filters">
           <button class="filter-btn active" data-cat="all">All Products</button>
-          <button class="filter-btn" data-cat="Krishna hand" id="k">Krishna Hands</button>
+          <!-- <button class="filter-btn" data-cat="Krishna hand" id="k">Krishna Hands</button> -->
           <!-- <button class="filter-btn" data-cat="Frame">Photo Frames</button> -->
-          <button class="filter-btn" data-cat="Idol">Idol</button>
+          <!-- <button class="filter-btn" data-cat="Idol">Idol</button> -->
           <!-- <button class="filter-btn" data-cat="festive">Festive</button> -->
           <!-- <button class="filter-btn" data-cat="corporate">Corporate</button> -->
         </div>
@@ -477,14 +488,30 @@
     </section>
 
     <!-- BESTSELLERS MARQUEE -->
-    <div class="marquee-band">
-      <div class="marquee-track">
-        <span>✦ Idol</span><span>Krishna Hand</span><span>✦</span><span>Photo Frame</span><span>✦</span><span>✦
-          Idol</span><span>Krishna Hand</span><span>✦</span><span>Photo Frame</span><span>✦</span>
-        <span>✦ Idol</span><span>Krishna Hand</span><span>✦</span><span>Photo Frame</span><span>✦</span><span>✦
-          Idol</span><span>Krishna Hand</span><span>✦</span><span>Photo Frame</span><span>✦</span>
-      </div>
+  <div class="marquee-band">
+    <div class="marquee-track">
+        <div class="marquee-content">
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+          <span>✦ Idol ✦ Handmade ✦ Divine Decor ✦</span>
+            
+        </div>
+
+        
     </div>
+</div>
 
     <!-- ABOUT STRIP -->
     <section class="about-strip section" id="about">
@@ -530,37 +557,37 @@
     </section>
 
     <!-- TESTIMONIALS -->
+    <!-- TESTIMONIALS -->
     <section class="testimonials section">
       <div class="container">
         <div class="section-head fade-in">
           <p class="eyebrow">What Customers Say</p>
           <h2>Loved by Thousands</h2>
         </div>
-        <div class="testi-grid">
-          {% for cux in client %}
-          <div class="testi-card fade-in">
-            <div class="testi-stars">★★★★★</div>
-            <p>{{ cux.review }}</p>
-            <div class="testi-author"><strong>{{ cux.name }}</strong><span></div>
+
+        <div class="swiper testimonialSwiper">
+          <div class="swiper-wrapper">
+
+            {% for cux in client %}
+            <div class="swiper-slide">
+              <div class="testi-card">
+                <div class="testi-stars">★★★★★</div>
+                <p>{{ cux.review }}</p>
+                <div class="testi-author">
+                  <strong>{{ cux.name }}</strong>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+
           </div>
-          {% endfor %}
-          <!-- Great! Really satisfied with the quality and service.
-      Parul Mittal -->
-          <!-- <div class="testi-card fade-in">
-        <div class="testi-stars">★★★★★</div>
-        <p>Amazing selection and excellent customer service. Highly recommend!</p>
-        <div class="testi-author"><strong>Pooja Jain</strong></div>
-      </div>
-      <div class="testi-card fade-in">
-        <div class="testi-stars">★★★★★</div>
-        <p>The best place. I will definitely be coming back!</p>
-        <div class="testi-author"><strong>Meera Desai</strong></div>
-      </div> -->
-          <!-- <div class="testi-card fade-in">
-        <div class="testi-stars">★★★★★</div>
-        <p>"Beautiful products, fast shipping, and excellent customer support. The terracotta diya set made our Diwali celebration so much more special!"</p>
-        <div class="testi-author"><strong>Kavita Patel</strong><span>Ahmedabad</span></div>
-      </div> -->
+
+          <!-- Pagination -->
+          <div class="swiper-pagination"></div>
+
+          <!-- Navigation -->
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
         </div>
       </div>
     </section>
@@ -612,25 +639,25 @@
           </div>
           <div class="contact-form fade-in">
             <form id="contactForm" method="post" onsubmit="submitContact(event)">
-                {% csrf_token %}
+              {% csrf_token %}
               <input type="text" name="name" placeholder="Your Name*" class="form-input" required />
               <input type="email" name="email" placeholder="Email Address*" class="form-input" required />
               <input type="tel" name="phone" placeholder="Phone Number" class="form-input" />
               <select class="form-input" name="subject">
                 <option>Subject</option>
-                <option value="order" >Order Enquiry</option>
-                <option value="custom" >Custom Order</option>
-                <option value="return" >Return / Exchange</option>
-                <option value="other" >Other</option>
+                <option value="order">Order Enquiry</option>
+                <option value="custom">Custom Order</option>
+                <option value="return">Return / Exchange</option>
+                <option value="other">Other</option>
               </select>
               <textarea placeholder="Your Message*" name="msg" class="form-input" rows="4" required></textarea>
               <button type="submit" class="btn-gold btn-full">Send Message</button>
             </form>
-            
+
             <div class="form-success" id="formSuccess" style="display:none">
               <p>✓ Thank you! We'll get back to you within 24 hours.</p>
             </div>
-           
+
           </div>
         </div>
       </div>
@@ -713,7 +740,7 @@
           <div class="footer-col">
             <h4>Customer Care</h4>
             <ul>
-              <li><a href="#">Track Order</a></li>
+              <li><a href="/track-order/">Track Order</a></li>
               <li><a href="#">Returns & Exchange</a></li>
               <li><a href="#">Shipping Policy</a></li>
               <li><a href="#">FAQs</a></li>
@@ -735,7 +762,7 @@
     <div class="footer-bottom">
       <div class="container">
         <p>© 2026 Divine Creations. All rights reserved. Made with ♥ in India.</p>
-        <p>Designed for artisans, crafted for you.</p>
+        <!-- <p>Designed for artisans, crafted for you.</p> -->
       </div>
     </div>
   </footer>
@@ -760,529 +787,354 @@
       <div id="pageModalContent"></div>
     </div>
   </div>
+  <div id="privacy-data" style="display:none;">
+    <h2>Privacy Policy</h2>
+    <p>Last Updated: {{ latest_update.update_at|date:"F d, Y" }}</p>
+    {% for policy in privacy %}
+    <li>{{ policy.title }}</li>
+    <p>{{ policy.content|safe }}</p>
+    {% endfor %}
+  </div>
+  <div id="terms-condition" style="display:none;">
+    <h2>Terms & Conditions</h2>
+    <p>Last updated: {{ last_update.last_update|date:"F d, Y" }}</p>
+    {% for term in terms %}
+    <li>{{ term.title }}</li>
+    <p>{{ term.content|safe }}</p>
+    {% endfor %}
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <script>
-  
 
- const PRODUCTS = [
-{% for p in products %}
-{
-    id: {{ p.id }},
-    name: "{{ p.name|escapejs }}",
-    cat: "{{ p.cat|default:'' }}",
 
-    price: {{ p.price|default:0 }},
-    old: {{ p.old|default:0 }},
+    const PRODUCTS = [
+      {% for p in products %}
+    {
+      id: {{ p.id }}, // FIXED: Removed spaces in Django tag so id renders as a number
+      name: "{{ p.name|escapejs }}",
+        cat: "{{ p.cat|default:'' }}",
 
-    // Multiple Images
-    img: [
+          price: {{ p.price|default:0 }}, // FIXED: Removed spaces in Django tag so price renders correctly
+      old: {{ p.old|default:0 }}, // FIXED: Removed spaces in Django tag so old price renders correctly
+
+      // Multiple Images
+      img: [
         {% if p.image and p.image.name %}
-        "{{ p.image.url }}"{% if p.gallery.all %},{% endif %}
-        {% endif %}
+    "{{ p.image.url }}"{% if p.gallery.all %}, {% endif %}
+    {% endif %}
 
-        {% for img in p.gallery.all %}
-        "{{ img.image.url }}"{% if not forloop.last %}, {% endif %}
-        {% endfor %}
+    {% for img in p.gallery.all %}
+    "{{ img.image.url }}"{% if not forloop.last %}, {% endif %}
+    {% endfor %}
     ],
 
     stars: "{{ p.stars|default:'' }}",
-    reviews: "{{ p.review|default:'' }}",
-    desc: "{{ p.desc|escapejs }}"
+      reviews: "{{ p.review|default:'' }}",
+        desc: "{{ p.desc|escapejs }}"
 }
-{% if not forloop.last %},{% endif %}
-{% endfor %}
+    {% if not forloop.last %}, {% endif %}
+    {% endfor %}
 ];
 
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
         const cookies = document.cookie.split(";");
         for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + "=")) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
         }
-    }
-    return cookieValue;
-}
-
-const csrftoken = getCookie("csrftoken");
-let rzpInstance = null;
-let paymentHandled = false;
-// Flag: true when Razorpay popup is open. Prevents .finally() from re-enabling
-// the button prematurely while the user is still interacting with the popup.
-let rzpIsOpen = false;
-
-// Helper function to show error messages
-function showErrorMessage(message, fieldId = null) {
-  // Remove any existing error messages
-  const existingErrors = document.querySelectorAll('.error-message-razorpay');
-  existingErrors.forEach(el => el.remove());
-
-  const errorEl = document.createElement("p");
-  errorEl.className = "error-message-razorpay";
-  errorEl.textContent = "⚠ " + message;
-  errorEl.style.cssText = "color: #d9534f; margin: 10px 0; padding: 10px; background: #f2dede; border-radius: 4px; border-left: 4px solid #d9534f;";
-  
-  if (fieldId) {
-    const field = document.getElementById(fieldId);
-    if (field) {
-      field.insertAdjacentElement("afterend", errorEl);
-    } else {
-      document.querySelector(".checkout-form").insertAdjacentElement("afterbegin", errorEl);
-    }
-  } else {
-    document.querySelector(".checkout-form").insertAdjacentElement("afterbegin", errorEl);
-  }
-
-  setTimeout(() => { errorEl.remove(); }, 4000);
-}
-
-// Validation functions
-function validateEmail(email) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
-
-function validatePhone(phone) {
-  const phoneRegex = /^[0-9]{10}$/;
-  return phoneRegex.test(phone);
-}
-
-function validatePincode(pincode) {
-  const pincodeRegex = /^[0-9]{6}$/;
-  return pincodeRegex.test(pincode);
-}
-
-function placeOrder() {
-  // Get form values
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const address1 = document.getElementById("address1").value.trim();
-  const address2 = document.getElementById("address2").value.trim();
-  const city = document.getElementById("city").value.trim();
-  const pincode = document.getElementById("pincode").value.trim();
-  const state = document.getElementById("state").value.trim();
-
-  // Clear previous errors
-  document.querySelectorAll('.error-message-razorpay').forEach(el => el.remove());
-
-  // Validate required fields
-  if (!name) {
-    showErrorMessage("Please enter your full name", "name");
-    return;
-  }
-
-  if (!email) {
-    showErrorMessage("Please enter your email address", "email");
-    return;
-  }
-
-  if (!validateEmail(email)) {
-    showErrorMessage("Please enter a valid email address", "email");
-    return;
-  }
-
-  if (!phone) {
-    showErrorMessage("Please enter your phone number", "phone");
-    return;
-  }
-
-  if (!validatePhone(phone)) {
-    showErrorMessage("Please enter a valid 10-digit phone number", "phone");
-    return;
-  }
-
-  if (!address1) {
-    showErrorMessage("Please enter your address", "address1");
-    return;
-  }
-
-  if (!city) {
-    showErrorMessage("Please enter your city", "city");
-    return;
-  }
-
-  if (!pincode) {
-    showErrorMessage("Please enter your pincode", "pincode");
-    return;
-  }
-
-  if (!validatePincode(pincode)) {
-    showErrorMessage("Please enter a valid 6-digit pincode", "pincode");
-    return;
-  }
-
-  if (!state) {
-    showErrorMessage("Please select a state");
-    return;
-  }
-
-  // Get total amount
-  const totalText = document.getElementById("checkoutTotal").innerText;
-  // Strip both currency symbol and commas to avoid isNaN failing on thousands separators (e.g. "1,200")
-  const total = totalText.replace("₹", "").replace(/,/g, "").trim();
-
-  if (!total || isNaN(total) || parseFloat(total) <= 0) {
-    console.error("Cart total validation failed. Text:", totalText, "Parsed:", total);
-    showErrorMessage("Invalid cart total. Please refresh and try again.");
-    return;
-  }
-
-  // Disable submit button to prevent multiple clicks
-  const checkoutBtn = document.querySelector('.checkout-modal .btn-gold');
-  if (checkoutBtn) {
-    checkoutBtn.disabled = true;
-    checkoutBtn.textContent = "Processing...";
-  }
-
-  // Get CSRF token
-  const currentCsrf = getCookie("csrftoken");
-
-  if (!currentCsrf) {
-    showErrorMessage("Security token not found. Please refresh the page.");
-    if (checkoutBtn) {
-      checkoutBtn.disabled = false;
-      checkoutBtn.textContent = "Place Order →";
-    }
-    return;
-  }
-
-  // Send checkout request to server
-  fetch("/checkout/", {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": currentCsrf,
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: 
-      "name=" + encodeURIComponent(name) +
-      "&email=" + encodeURIComponent(email) +
-      "&phone=" + encodeURIComponent(phone) +
-      "&address1=" + encodeURIComponent(address1) +
-      "&address2=" + encodeURIComponent(address2) +
-      "&city=" + encodeURIComponent(city) +
-      "&pincode=" + encodeURIComponent(pincode) +
-      "&state=" + encodeURIComponent(state) +
-      "&amount=" + encodeURIComponent(total)
-  })
-  .then(res => res.json().then(data => ({ ok: res.ok, data })))
-  .then(({ ok, data }) => {
-    if (!ok) {
-      throw new Error(data.message || data.error || 'Checkout failed');
-    }
-    return data;
-  })
-  .then(data => {
-    if (!data.order_id || !data.amount || !data.key) {
-      throw new Error(data.message || 'Invalid response from server');
-    }
-
-    // Razorpay payment options
-    const razorpayOptions = {
-      key: data.key,
-      amount: data.amount,
-      currency: "INR",
-      name: "Divine Creations",
-      description: "Purchase from Divine Creations",
-      order_id: data.order_id,
-      customer_notif: 1,
-      notes: {
-        customer_name: name,
-        customer_email: email,
-        customer_phone: phone
-      },
-      handler: function(response) {
-        console.log('[Razorpay] handler triggered', response);
-        handlePaymentSuccess(response);
-      },
-      modal: {
-        ondismiss: handlePaymentDismiss
-      },
-      theme: {
-        color: "#d4af37"
       }
-    };
-
-    if (typeof Razorpay === 'undefined') {
-      throw new Error('Razorpay payment gateway is not available');
+      return cookieValue;
     }
 
-    if (!/^order_/.test(data.order_id)) {
-      console.warn('[placeOrder] Backend returned non-standard Razorpay order_id:', data.order_id);
-    }
+    const csrftoken = getCookie("csrftoken");
 
-    console.log('[placeOrder] Razorpay checkout launching with order:', data.order_id, 'amount:', data.amount);
+    // Helper function to show error messages
+    function showErrorMessage(message, fieldId = null) {
+      const existingErrors = document.querySelectorAll('.error-message-checkout');
+      existingErrors.forEach(el => el.remove());
 
-    try {
-      rzpInstance = new Razorpay(razorpayOptions);
-      rzpInstance.on('payment.success', function(response) {
-        console.log('[Razorpay] event payment.success received', response);
-        handlePaymentSuccess(response);
-      });
-      rzpInstance.on('payment.failed', handlePaymentFailed);
-      rzpInstance.open();
-      paymentHandled = false;
-      rzpIsOpen = true;
-      console.log('[Razorpay] Popup opened. Order ID:', data.order_id);
+      const errorEl = document.createElement("p");
+      errorEl.className = "error-message-checkout";
+      errorEl.textContent = "⚠ " + message;
+      errorEl.style.cssText = "color: #d9534f; margin: 10px 0; padding: 10px; background: #f2dede; border-radius: 4px; border-left: 4px solid #d9534f;";
 
-      const fallbackTimer = setTimeout(() => {
-        console.warn('[Razorpay] Fallback timeout: force-closing popup.');
-        cleanupRazorpayElements();
-      }, 300000); // 5 minutes
-
-      if (rzpInstance && typeof rzpInstance.on === 'function') {
-        rzpInstance.on('payment.success', () => clearTimeout(fallbackTimer));
-        rzpInstance.on('payment.failed', () => clearTimeout(fallbackTimer));
+      if (fieldId) {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.insertAdjacentElement("afterend", errorEl);
+        } else {
+          document.querySelector(".checkout-form").insertAdjacentElement("afterbegin", errorEl);
+        }
+      } else {
+        document.querySelector(".checkout-form").insertAdjacentElement("afterbegin", errorEl);
       }
-    } catch (err) {
-      console.error('[Razorpay] Failed to open popup:', err);
-      throw new Error('Unable to open payment gateway');
+
+      setTimeout(() => { errorEl.remove(); }, 4000);
     }
-  })
-  .catch(err => {
-    console.error('[placeOrder] Checkout error:', err);
-    showErrorMessage(err.message || 'Unable to process checkout. Please try again.');
-  })
-  .finally(() => {
-    // ROOT CAUSE FIX #3: Only re-enable button if Razorpay popup did NOT open.
-    // If popup is open, dismiss/failed/success handlers will re-enable the button.
-    if (!rzpIsOpen && checkoutBtn) {
-      console.log('[placeOrder] Razorpay popup did not open — re-enabling button from finally.');
-      checkoutBtn.disabled = false;
-      checkoutBtn.textContent = "Place Order →";
+
+    // Validation functions
+    function validateEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
     }
-  });
-}
 
-// Helper function to clean up Razorpay DOM elements safely
-function cleanupRazorpayElements() {
-  console.log('[cleanupRazorpayElements] Cleaning up Razorpay popup and DOM elements.');
-
-  rzpIsOpen = false;
-
-  try {
-    if (rzpInstance && typeof rzpInstance.close === 'function') {
-      rzpInstance.close();
-      console.log('[cleanupRazorpayElements] rzpInstance.close() called.');
+    function validatePhone(phone) {
+      const phoneRegex = /^[0-9]{10}$/;
+      return phoneRegex.test(phone);
     }
-  } catch (e) {
-    console.warn('[cleanupRazorpayElements] rzpInstance.close() failed:', e);
-  } finally {
-    rzpInstance = null;
-  }
 
-  try {
-    const selectors = [
-      '.razorpay-container',
-      'iframe.razorpay-checkout-frame',
-      '.razorpay-backdrop',
-      '.razorpay-modal',
-      '[data-testid="razorpay-checkout"]'
-    ];
-    let removed = 0;
-    selectors.forEach(selector => {
-      document.querySelectorAll(selector).forEach(el => {
-        el.remove();
-        removed++;
-      });
-    });
-    console.log('[cleanupRazorpayElements] Removed', removed, 'Razorpay DOM element(s).');
-    document.body.style.overflow = 'auto';
-  } catch (e) {
-    console.warn('[cleanupRazorpayElements] DOM cleanup failed:', e);
-  }
-}
-
-// Handle successful payment — called by Razorpay SDK after user completes payment.
-function handlePaymentSuccess(response) {
-  if (paymentHandled) {
-    console.warn('[handlePaymentSuccess] Duplicate payment success callback ignored.');
-    return;
-  }
-  paymentHandled = true;
-
-  console.log('[handlePaymentSuccess] Called with response:', JSON.stringify(response));
-  const currentCsrf = getCookie("csrftoken");
-  const checkoutBtn = document.querySelector('.checkout-modal .btn-gold');
-  let verificationSucceeded = false;
-
-  if (!response.razorpay_payment_id || !response.razorpay_order_id || !response.razorpay_signature) {
-    console.error('[handlePaymentSuccess] Invalid response — missing payment_id or order_id or signature.');
-    handlePaymentError('Payment response invalid');
-    return;
-  }
-
-  console.log('[handlePaymentSuccess] Sending verification to /payment-success/...');
-  console.log('  payment_id:', response.razorpay_payment_id);
-  console.log('  order_id:', response.razorpay_order_id);
-  console.log('  signature:', response.razorpay_signature);
-
-  if (!currentCsrf) {
-    console.error('[handlePaymentSuccess] CSRF token missing. Cannot verify payment.');
-  }
-
-  console.log('[handlePaymentSuccess] About to POST to /payment-success/');
-  fetch("/payment-success/", {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": currentCsrf,
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body:
-      "razorpay_payment_id=" + encodeURIComponent(response.razorpay_payment_id) +
-      "&razorpay_order_id=" + encodeURIComponent(response.razorpay_order_id) +
-      "&razorpay_signature=" + encodeURIComponent(response.razorpay_signature || '')
-  })
-  .then(res => {
-    console.log('[handlePaymentSuccess] Server responded with HTTP', res.status);
-    return res.json().then(data => ({ ok: res.ok, data }));
-  })
-  .then(({ ok, data }) => {
-    console.log('[handlePaymentSuccess] Server response body:', JSON.stringify(data));
-    if (!ok) {
-      throw new Error(data.message || 'Payment verification failed');
+    function validatePincode(pincode) {
+      const pincodeRegex = /^[0-9]{6}$/;
+      return pincodeRegex.test(pincode);
     }
-    if (data.status !== "success") {
-      throw new Error(data.message || 'Payment verification failed');
-    }
-    verificationSucceeded = true;
 
-    console.log('[handlePaymentSuccess] Verification successful. Closing popup and redirecting.');
-    cleanupRazorpayElements();
+    function placeOrder() {
+      // Get form values
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const address1 = document.getElementById("address1").value.trim();
+      const address2 = document.getElementById("address2").value.trim();
+      const city = document.getElementById("city").value.trim();
+      const pincode = document.getElementById("pincode").value.trim();
+      const state = document.getElementById("state").value.trim();
 
-    const checkoutOverlay = document.getElementById("checkoutOverlay");
-    if (checkoutOverlay) checkoutOverlay.style.display = "none";
+      // Clear previous errors
+      document.querySelectorAll('.error-message-checkout').forEach(el => el.remove());
 
-    const orderSuccess = document.getElementById("orderSuccess");
-    if (orderSuccess) orderSuccess.style.display = "flex";
+      // Validate required fields
+      if (!name) {
+        showErrorMessage("Please enter your full name", "name");
+        return;
+      }
 
-    try { localStorage.removeItem("vasudha_cart"); } catch (e) {}
+      if (!email) {
+        showErrorMessage("Please enter your email address", "email");
+        return;
+      }
 
-    setTimeout(() => {
-      window.location.href = "/order-success/?order_id=" + encodeURIComponent(response.razorpay_order_id);
-    }, 2000);
-  })
-  .catch(err => {
-    console.error('[handlePaymentSuccess] Verification failed:', err);
-    handlePaymentError(err.message || 'Unable to verify payment. Please contact support.');
-  })
-  .finally(() => {
-    if (!verificationSucceeded) {
-      cleanupRazorpayElements();
+      if (!validateEmail(email)) {
+        showErrorMessage("Please enter a valid email address", "email");
+        return;
+      }
+
+      if (!phone) {
+        showErrorMessage("Please enter your phone number", "phone");
+        return;
+      }
+
+      if (!validatePhone(phone)) {
+        showErrorMessage("Please enter a valid 10-digit phone number", "phone");
+        return;
+      }
+
+      if (!address1) {
+        showErrorMessage("Please enter your address", "address1");
+        return;
+      }
+
+      if (!city) {
+        showErrorMessage("Please enter your city", "city");
+        return;
+      }
+
+      if (!pincode) {
+        showErrorMessage("Please enter your pincode", "pincode");
+        return;
+      }
+
+      if (!validatePincode(pincode)) {
+        showErrorMessage("Please enter a valid 6-digit pincode", "pincode");
+        return;
+      }
+
+      if (!state) {
+        showErrorMessage("Please select a state");
+        return;
+      }
+
+      // Get total amount
+      const totalText = document.getElementById("checkoutTotal").innerText;
+      // Strip both currency symbol and commas to avoid isNaN failing on thousands separators (e.g. "1,200")
+      const total = totalText.replace("₹", "").replace(/,/g, "").trim();
+
+      if (!total || isNaN(total) || parseFloat(total) <= 0) {
+        showErrorMessage("Invalid cart total. Please refresh and try again.");
+        return;
+      }
+
+      if (!cart || !cart.length) {
+        showErrorMessage("Your cart is empty. Please add products before checkout.");
+        return;
+      }
+
+      const checkoutBtn = document.querySelector('.checkout-modal .btn-gold');
       if (checkoutBtn) {
-        checkoutBtn.disabled = false;
-        checkoutBtn.textContent = "Place Order →";
+        checkoutBtn.disabled = true;
+        checkoutBtn.textContent = "Processing...";
+      }
+
+      const currentCsrf = getCookie("csrftoken");
+      if (!currentCsrf) {
+        showErrorMessage("Security token not found. Please refresh the page.");
+        if (checkoutBtn) {
+          checkoutBtn.disabled = false;
+          checkoutBtn.textContent = "Place Order →";
+        }
+        return;
+      }
+
+      fetch("/checkout/", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": currentCsrf,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          phone: phone,
+          address1: address1,
+          address2: address2,
+          city: city,
+          pincode: pincode,
+          state: state,
+          amount: total,
+          items: cart.map(function(item) {
+            return {
+              id: item.id,
+              name: item.name,
+              price: item.price,
+              qty: item.qty
+            };
+          })
+        })
+      })
+        .then(function(res) {
+          return res.json().then(function(data) {
+            return { ok: res.ok, data: data };
+          });
+        })
+        .then(function(result) {
+          if (!result.ok || result.data.status !== "success") {
+            throw new Error(result.data.message || "Unable to place order");
+          }
+
+          document.getElementById("checkoutOverlay").style.display = "none";
+          document.getElementById("successOrderId").textContent = result.data.order_number || result.data.order_id || "";
+          document.getElementById("successCustomerName").textContent = result.data.customer_name || name;
+          document.getElementById("successOrderDate").textContent = result.data.order_date || "";
+          document.getElementById("successPaymentMethod").textContent = result.data.payment_method || "Cash on Delivery";
+          document.getElementById("successOrderAmount").textContent = "₹" + total;
+          document.getElementById("successEstimatedDelivery").textContent = result.data.estimated_delivery || "Will be shared soon";
+          document.getElementById("trackOrderBtn").href = "/track-order/?order_ref=" + encodeURIComponent(result.data.order_number || result.data.order_id || "");
+          document.getElementById("orderSuccess").style.display = "flex";
+
+          try { localStorage.removeItem("vasudha_cart"); } catch (e) { }
+          if (typeof updateCartUI === 'function') updateCartUI();
+        })
+        .catch(function(err) {
+          showErrorMessage(err.message || "Unable to place order. Please try again.");
+        })
+        .finally(function() {
+          if (checkoutBtn) {
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = "Place Order →";
+          }
+        });
+    }
+
+    function closeOrder(e) {
+      if (e && e.preventDefault) {
+        e.preventDefault();
+      }
+
+      try {
+        // Clear cart from localStorage
+        localStorage.removeItem("vasudha_cart");
+
+        // Reset all form inputs in checkout modal
+        const checkoutModal = document.querySelector('.checkout-modal');
+        if (checkoutModal) {
+          checkoutModal.querySelectorAll('input, textarea').forEach(input => {
+            input.value = "";
+          });
+          checkoutModal.querySelector('select').value = "Select State*";
+        }
+
+        // Clear any error messages
+        document.querySelectorAll('.error-message-checkout').forEach(el => el.remove());
+
+        // Close order success modal
+        const orderSuccessModal = document.getElementById("orderSuccess");
+        if (orderSuccessModal) {
+          orderSuccessModal.style.display = "none";
+        }
+
+        // Close checkout modal
+        const checkoutOverlay = document.getElementById("checkoutOverlay");
+        if (checkoutOverlay) {
+          checkoutOverlay.style.display = "none";
+        }
+
+        // Update cart badge
+        // ROOT CAUSE FIX #4: updateCartBadge() does not exist. Correct function is updateCartUI().
+        if (typeof updateCartUI === 'function') updateCartUI();
+
+        // Redirect to home
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 500);
+      } catch (err) {
+        console.error('Error in closeOrder:', err);
+        window.location.href = "/";
       }
     }
-  });
-}
 
-// Handle failed payment — called by rzpInstance.on('payment.failed', ...)
-// ROOT CAUSE FIX #2: response.error can be undefined; always use safe access.
-function handlePaymentFailed(response) {
-  console.error('[handlePaymentFailed] Payment failed. Full response:', JSON.stringify(response));
 
-  // Safe access — response.error may not exist for all failure types
-  const errorCode = (response && response.error && response.error.code) ? response.error.code : 'UNKNOWN';
-  const errorDesc = (response && response.error && response.error.description) ? response.error.description : 'Payment failed. Please try again.';
-  const errorReason = (response && response.error && response.error.reason) ? response.error.reason : '';
 
-  console.error('[handlePaymentFailed] Code:', errorCode, '| Reason:', errorReason, '| Description:', errorDesc);
 
-  // cleanupRazorpayElements() also resets rzpIsOpen = false
-  cleanupRazorpayElements();
+    new Swiper(".testimonialSwiper", {
+      loop: true,
+      spaceBetween: 20,
 
-  // Re-enable checkout button so user can retry
-  const checkoutBtn = document.querySelector('.checkout-modal .btn-gold');
-  if (checkoutBtn) {
-    checkoutBtn.disabled = false;
-    checkoutBtn.textContent = "Place Order →";
-  }
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+      },
 
-  showErrorMessage('Payment failed: ' + errorDesc);
-}
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
 
-// Handle payment dismissal — called when user manually closes the Razorpay popup
-function handlePaymentDismiss() {
-  console.log('[handlePaymentDismiss] User dismissed the Razorpay popup.');
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
 
-  // cleanupRazorpayElements() also resets rzpIsOpen = false
-  cleanupRazorpayElements();
+      breakpoints: {
+        0: {
+          slidesPerView: 1,
+        },
+        768: {
+          slidesPerView: 2,
+        },
+        1024: {
+          slidesPerView: 2,
+        },
+      },
+    });
 
-  // Re-enable checkout button so user can retry
-  const checkoutBtn = document.querySelector('.checkout-modal .btn-gold');
-  if (checkoutBtn) {
-    checkoutBtn.disabled = false;
-    checkoutBtn.textContent = "Place Order →";
-  }
-  console.log('[handlePaymentDismiss] Button re-enabled. User can retry.');
-}
-
-// Handle payment error
-function handlePaymentError(message) {
-  console.error('Payment error:', message);
-  showErrorMessage(message || 'Payment could not be processed');
-
-  const checkoutBtn = document.querySelector('.checkout-modal .btn-gold');
-  if (checkoutBtn) {
-    checkoutBtn.disabled = false;
-    checkoutBtn.textContent = "Place Order →";
-  }
-}
-
-function closeOrder(e) {
-  if (e && e.preventDefault) {
-    e.preventDefault();
-  }
-  
-  try {
-    // Clear cart from localStorage
-    localStorage.removeItem("vasudha_cart");
-    
-    // Reset all form inputs in checkout modal
-    const checkoutModal = document.querySelector('.checkout-modal');
-    if (checkoutModal) {
-      checkoutModal.querySelectorAll('input, textarea').forEach(input => {
-        input.value = "";
-      });
-      checkoutModal.querySelector('select').value = "Select State*";
-    }
-    
-    // Clear any error messages
-    document.querySelectorAll('.error-message-razorpay').forEach(el => el.remove());
-    
-    // Close order success modal
-    const orderSuccessModal = document.getElementById("orderSuccess");
-    if (orderSuccessModal) {
-      orderSuccessModal.style.display = "none";
-    }
-    
-    // Close checkout modal
-    const checkoutOverlay = document.getElementById("checkoutOverlay");
-    if (checkoutOverlay) {
-      checkoutOverlay.style.display = "none";
-    }
-    
-    // Update cart badge
-    // ROOT CAUSE FIX #4: updateCartBadge() does not exist. Correct function is updateCartUI().
-    if (typeof updateCartUI === 'function') updateCartUI();
-    
-    // Redirect to home
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 500);
-  } catch (err) {
-    console.error('Error in closeOrder:', err);
-    window.location.href = "/";
-  }
-}
   </script>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="{% static 'js/script.js' %}"></script>
 
 </body>
+
 </html>

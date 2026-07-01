@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
   initBackTop();
   initSearch();
-  
 });
 
 // ---- LOADER ----
@@ -35,18 +34,6 @@ function initLoader() {
     document.getElementById('loader').classList.add('hidden');
   }, 1800);
 }
-function filterByCategory(cat) {
-  currentFilter = cat;
-  visibleCount = 8;
-
-  document.querySelectorAll('.filter-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.cat === cat);
-  });
-
-  renderProducts();
-  document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
-}
-
 // ---- NAVBAR ----
 function initNavbar() {
   const navbar = document.getElementById('navbar');
@@ -300,6 +287,13 @@ function filterByCategory(cat) {
   document.querySelectorAll('.filter-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.cat === cat);
   });
+
+  // Clear search input and restore default eyebrow text
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) searchInput.value = '';
+  const eyebrow = document.querySelector('#shop .eyebrow');
+  if (eyebrow) eyebrow.textContent = 'Handpicked for You';
+
   renderProducts();
   document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
 }
@@ -307,8 +301,18 @@ function filterByCategory(cat) {
 // ---- RENDER PRODUCTS ----
 function renderProducts() {
   const grid = document.getElementById('productsGrid');
+  if (PRODUCTS.length === 0) {
+    grid.innerHTML = '<div class="no-products" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; font-family: var(--font-primary), serif; font-size: 1.5rem; color: #888;">No products found.</div>';
+    document.getElementById('loadMoreBtn').style.display = 'none';
+    return;
+  }
   const filtered = currentFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === currentFilter);
   const shown = filtered.slice(0, visibleCount);
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="no-products" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; font-family: var(--font-primary), serif; font-size: 1.5rem; color: #888;">No products found in this category.</div>';
+    document.getElementById('loadMoreBtn').style.display = 'none';
+    return;
+  }
   grid.innerHTML = shown.map(productCard).join('');
   document.getElementById('loadMoreBtn').style.display = shown.length < filtered.length ? 'inline-flex' : 'none';
 }
@@ -582,13 +586,68 @@ function initSearch() {
       document.getElementById('quickViewOverlay').style.display = 'none';
     }
   });
+
+  // Handle search form submission client-side
+  const searchForm = document.getElementById('searchInput').closest('form');
+  if (searchForm) {
+    searchForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      performSearch();
+    });
+  }
+
   document.querySelectorAll('.search-suggestions span').forEach(s => {
     s.addEventListener('click', () => {
-      document.getElementById('searchInput').value = s.textContent;
+      const searchInput = document.getElementById('searchInput');
+      searchInput.value = s.textContent.trim();
       document.getElementById('searchOverlay').classList.remove('active');
-      document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+      performSearch();
     });
   });
+}
+
+function performSearch() {
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  document.getElementById('searchOverlay').classList.remove('active');
+
+  if (!query) {
+    // Empty search: reset to show all products
+    currentFilter = 'all';
+    visibleCount = 8;
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.cat === 'all');
+    });
+    renderProducts();
+    document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+
+  // Filter products by name or category (case-insensitive, partial match)
+  const results = PRODUCTS.filter(p =>
+    p.name.toLowerCase().includes(query) ||
+    p.cat.toLowerCase().includes(query)
+  );
+
+  // Render search results directly into the grid
+  const grid = document.getElementById('productsGrid');
+  if (results.length === 0) {
+    grid.innerHTML = '<div class="no-products" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; font-family: var(--font-primary), serif; font-size: 1.5rem; color: #888;">No products found.</div>';
+    document.getElementById('loadMoreBtn').style.display = 'none';
+  } else {
+    grid.innerHTML = results.map(productCard).join('');
+    document.getElementById('loadMoreBtn').style.display = 'none';
+  }
+
+  // Update the eyebrow text to show search context
+  const eyebrow = document.querySelector('#shop .eyebrow');
+  if (eyebrow) {
+    eyebrow.textContent = 'Search Results for "' + document.getElementById('searchInput').value.trim() + '"';
+  }
+
+  // Deactivate all filter buttons since this is a search result
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+
+  document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
 }
 
 // ---- CONTACT FORM ----
@@ -674,36 +733,10 @@ function initBackTop() {
 
 // ---- STATIC PAGES ----
 const PAGES = {
-  privacy: `
-    <h2>Privacy Policy</h2>
-    <p>Last updated: January 2025</p>
-    <h3>1. Information We Collect</h3>
-    <p>We collect information you provide when making purchases, creating accounts, or contacting us. This includes name, email, address, and payment details.</p>
-    <h3>2. How We Use Your Information</h3>
-    <p>Your information is used to process orders, send updates, personalise your experience, and improve our services. We never sell your data to third parties.</p>
-    <h3>3. Data Security</h3>
-    <p>All transactions are SSL encrypted. We use industry-standard security measures to protect your personal information.</p>
-    <h3>4. Cookies</h3>
-    <p>We use cookies to enhance your browsing experience. You may disable cookies in your browser settings.</p>
-    <h3>5. Contact</h3>
-    <p>For privacy-related queries, email us at privacy@vasudha.store</p>
-  `,
-  terms: `
-    <h2>Terms & Conditions</h2>
-    <p>Last updated: January 2025</p>
-    <h3>1. Acceptance of Terms</h3>
-    <p>By accessing or using Vasudha's website, you agree to be bound by these Terms and Conditions.</p>
-    <h3>2. Products & Pricing</h3>
-    <p>All prices are in Indian Rupees (₹) and inclusive of GST. We reserve the right to change prices without notice.</p>
-    <h3>3. Orders & Payments</h3>
-    <p>Orders are confirmed upon payment. We accept UPI, credit/debit cards, and Cash on Delivery (COD).</p>
-    <h3>4. Shipping Policy</h3>
-    <p>Free shipping on orders above ₹999. Standard delivery takes 5–7 business days. Express delivery is available at extra cost.</p>
-    <h3>5. Returns & Refunds</h3>
-    <p>We accept returns within 7 days of delivery for damaged or incorrect items. Customised items are non-returnable.</p>
-    <h3>6. Intellectual Property</h3>
-    <p>All content on this website is the property of Vasudha and may not be reproduced without permission.</p>
-  `
+  
+      privacy: document.getElementById("privacy-data").innerHTML,
+
+  terms:document.getElementById("terms-condition").innerHTML
 };
 function showPage(key) {
   document.getElementById('pageModalContent').innerHTML = PAGES[key] || '';

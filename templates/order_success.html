@@ -4,10 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment Successful - Divine Creations</title>
-  <!-- SEO -->
-  <meta name="description" content="Thank you for your order with Divine Creations. Your payment was processed successfully.">
-  <!-- Google Fonts -->
+  <title>Order Placed - Divine Creations</title>
+  <meta name="description" content="Thank you for your order with Divine Creations.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -215,19 +213,27 @@
       </svg>
     </div>
 
-    <h1>Payment Successful!</h1>
-    <p class="subtitle">Your order has been placed successfully.</p>
+    <h1>Order Placed!</h1>
+    <p class="subtitle">Thank you! Your Cash on Delivery order has been placed successfully.</p>
 
     {% if order %}
     <div class="order-details">
       <div class="details-title">Order Information</div>
       <div class="detail-row">
-        <span class="detail-label">Order ID</span>
-        <span class="detail-value">{{ order.order_id }}</span>
+        <span class="detail-label">Order Number</span>
+        <span class="detail-value">{{ order.order_number|default:order.order_id }}</span>
       </div>
       <div class="detail-row">
-        <span class="detail-label">Payment ID</span>
-        <span class="detail-value">{{ order.payment_id }}</span>
+        <span class="detail-label">Order ID</span>
+        <span class="detail-value">#{{ order.id }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Payment Method</span>
+        <span class="detail-value">{{ order.payment_method }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Order Status</span>
+        <span class="detail-value">{{ order.status }}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">Name</span>
@@ -242,7 +248,7 @@
         <span class="detail-value">{{ order.city }}{% if order.state %}, {{ order.state }}{% endif %}</span>
       </div>
       <div class="detail-row">
-        <span class="detail-label">Amount Paid</span>
+        <span class="detail-label">Total Amount</span>
         <span class="detail-value" style="color: var(--gold); font-weight: 700;">₹{{ order.amount }}</span>
       </div>
     </div>
